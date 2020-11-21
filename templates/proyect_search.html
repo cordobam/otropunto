@@ -1,0 +1,361 @@
+{% extends 'base_dash.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{%block head%}
+    {{ super() }}
+    <style>
+        .dot {
+        height: 10px;
+        width: 10px;
+        background-color:gold;
+        border-radius: 50%;
+        display: inline-block;
+        }
+    </style>
+{% endblock %}
+
+{%block nav%}
+    {{ super() }}
+{% endblock %}
+
+{% block info_contact%}
+    {% if  session['id_user_role']  == 2%}
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('proyect', page='index' , id=0)}}">Mis Proyectos</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('report')}}">Reportes</a>
+        </li>
+        {% if notifications.items %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if flag_read%}
+                        
+                    {% else %}
+                        <span class="dot" style="vertical-align: middle; margin-left: 1px; margin-right: 1px;"></span>
+                    {% endif %}
+                    Notificaciones
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                    {% for n in notifications.items%}
+                        {% if n.read%}
+                            
+                        {% else %}
+                            <a class="dropdown-item" href="">{{ n.description  }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if flag_read %}
+                        <a class="dropdown-item" href="">Sin notificaciones nuevas</a>
+                    {% endif %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                    <a class="dropdown-item" href="">Configuracion</a>
+                </div>
+            </li>
+        {% else %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Notificaciones
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                    <a class="dropdown-item" href="">Sin notificaciones</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                    <a class="dropdown-item" href="">Configuracion</a>
+                </div>
+            </li>
+        {% endif %}
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock %}
+
+{% block notification%}
+    {% if notifications.items %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% if flag_read%}
+                    
+                {% else %}
+                    <span class="dot" style="vertical-align: middle; margin-left: 1px; margin-right: 1px;"></span>
+                {% endif %}
+                Notificaciones
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                {% for n in notifications.items%}
+                    {% if n.read%}
+                        
+                    {% else %}
+                        <a class="dropdown-item" href="">{{ n.description  }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if flag_read %}
+                    <a class="dropdown-item" href="">Sin notificaciones nuevas</a>
+                {% endif %}
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                <a class="dropdown-item" href="">Configuracion</a>
+            </div>
+        </li>
+    {% else %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Notificaciones
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+            <a class="dropdown-item" href="">Sin notificaciones</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+            <a class="dropdown-item" href="">Configuracion</a>
+        </div>
+    </li>
+    {% endif %}
+{% endblock %}
+
+{% block menu%}
+ 
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-block: 15px;">
+    <div class="row">
+        <div class="col-sm-12">
+
+
+            <!-- ############################################################## -->
+
+            <div class="d-flex justify-content-between">
+                {% if proyect_update == None %}
+                <form class='form-inline' action="{{ url_for('proyect', page='buscar', id=0) }}" method="POST">
+                    <div class="p-2">{{ wtf.form_field(search_form.name_to_search, class='form-control') }}</div>
+                    <div class="p-2" >{{ wtf.form_field(search_form.submit , class='btn btn-primary_1 btn-xl' , style="color: white;" , value="Buscar") }}</div>
+                </form>
+                {% endif %}
+
+                <div class="p-2"><h3>Mis Proyectos</h3></div>
+
+                {% if  session['id_user_role'] == 2 %}
+                    {% if  proyect_data != None and proyect_update == None %}
+                        <div class="p-2"><a class="dropdown-item" title="Volver" href="{{ url_for('proyect' , page = 'ver_index' , id=proyect_data.id_proyect , action = 'active')  }}"><i class="fa fa-hand-o-left" aria-hidden="true"></i></a></div> <!-- Volver -->
+                    {% elif proyect_data == None and proyect_update != None %}
+                        <div class="p-2"><a class="dropdown-item" title="Volver" href="{{ url_for('proyect' , page = 'ver_index' , id=proyect_update.id_proyect , action = 'active')  }}"><i class="fa fa-hand-o-left" aria-hidden="true"></i></a></div> <!-- Volver -->
+                    {% else %}
+                        <div class="p-2"><a class="dropdown-item" title="Volver" href="{{url_for('dashboard' , action='none')}}"><i class="fa fa-hand-o-left" aria-hidden="true"></i></a></div> <!-- Volver -->
+                    {% endif %}
+                {% else %}
+                    {% if  proyect_data != None and proyect_update == None %}
+                        <div class="p-2"><a class="dropdown-item" title="Archivar" href="{{ url_for('proyect' , page = 'delete' , id=proyect_data.id_proyect)  }}"><i class="fa fa-trash" aria-hidden="true"></i></a></div> <!-- Archivar -->
+                        <div class="p-2"><a class="dropdown-item" title="Modificar" href="{{ url_for('proyect' , page = 'update' , id=proyect_data.id_proyect)  }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></div> <!-- Modificar -->
+                        <div class="p-2"><a class="dropdown-item" title="Volver" href="{{ url_for('proyect' , page = 'ver_index' , id=proyect_data.id_proyect , action = 'active')  }}"><i class="fa fa-hand-o-left" aria-hidden="true"></i></a></div> <!-- Volver -->
+                    {% elif proyect_data == None and proyect_update != None %}
+                        <div class="p-2"><a class="dropdown-item" title="Archivar" href="{{ url_for('proyect' , page = 'delete' , id=proyect_update.id_proyect)  }}"><i class="fa fa-trash" aria-hidden="true"></i></a></div> <!-- Archivar -->
+                        <div class="p-2"><a class="dropdown-item" title="Modificar" href="{{ url_for('proyect' , page = 'update' , id=proyect_update.id_proyect)  }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></div> <!-- Modificar -->
+                        <div class="p-2"><a class="dropdown-item" title="Volver" href="{{ url_for('proyect' , page = 'ver_index' , id=proyect_update.id_proyect , action = 'active')  }}"><i class="fa fa-hand-o-left" aria-hidden="true"></i></a></div> <!-- Volver -->
+                    {% else %}
+                        <div class="p-2"><a class="dropdown-item" title="Nuevo proyecto" href="{{ url_for('proyect' , page='create' , id=0) }}"><i class="fa fa-plus" aria-hidden="true"></i></a></div> <!-- Nuevo proyecto -->
+                    {% endif %}
+                {% endif %}
+            </div>
+            <hr>
+
+            <!-- ############################################################## -->
+
+            {% if page == 'update' %}
+
+            {% elif page == 'delete' %}
+
+            {% elif proyect_data == None %}
+                <div class="d-flex justify-content-center">
+                    <div class="p-2"><a class="btn btn-xl" style="color: white; background-color: gray;" href="{{url_for('proyect', page='index' , id=0 , action = 'none')}}">En curso</a></div>
+                    <div class="p-2"><a class="btn btn-xl" style="color: white; background-color: gray;" href="{{url_for('proyect', page='index' , id=0 ,action = 'archive')}}">Archivados</a></div>
+                    <div class="p-2"><a class="btn btn-xl" style="color: white; background-color: gray;" href="{{url_for('proyect', page='index' , id=0 , action = 'over')}}">Finalizados</a></div>
+                </div>
+                <div class="d-flex" style="padding-top: 15px;"></div>
+            {% else %}
+
+            {% endif %}
+
+            <!-- ############################################################## -->
+
+            <div class="row">
+            {% if  proyect_data != None %}
+                <div class="col-sm-4">
+                    <div class="card">
+                        <div class="card-body">
+                        <h5 class="card-title">{{ proyect_data.proyect_name}}</h5>
+                        <p class="card-text">Fecha: {{ proyect_data.create_date}}</p>
+                        <p class="card-text">Creador: {{ proyect_data.id_user}}</p>
+                        <a class="btn btn-primary_1 btn-xl" style="color: white;" href="{{url_for('proyect' , page='ver_index' , id=proyect_data.id_proyect , action = 'active')}}">Ver proyecto</a>
+                        </div>
+                    </div>
+                </div>
+            {% elif proyect_update == None  %}
+                {% for pu in proyect_user.items %}
+                    <div class="col-sm-4">
+                        <div class="card">
+                            <div class="card-body">
+                            <h5 class="card-title">{{ pu._proyect.proyect_name}}</h5>
+                            <p class="card-text">Fecha: {{ pu._proyect.create_date}}</p>
+                            <p class="card-text">Creador: {{ pu.id_user}}</p>
+                            <a class="btn btn-primary_1 btn-xl" style="color: white;" href="{{url_for('proyect' , page='ver_index' , id=pu.id_proyect , action = 'active')}}">Ver proyecto</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            </div>
+            {% if proyect_data == None and  proyect_update == None  %}
+                <div class="d-flex" style="padding-top: 15px;"></div>
+                <div class="d-flex justify-content-center text-center">
+                    <div class=pagination>
+                        {% for page in proyect_user.iter_pages() %}
+                            {% if page %}
+                                {% if page != proyect_user.page %}
+                                    <div class="p-2"><a style="color: gray;" href="{{url_for('proyect', page='index' , id=0 , pages=page)}}">{{ page }}</a></div>
+                                {% else %}
+                                    <div class="p-2"><strong>{{ page }}</strong></div>
+                                {% endif %}
+                            {% else %}
+                                <div class="p-2"><span class=ellipsis style="color: gray;">…</span></div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+            {% endif %}
+            
+            <!-- ############################################################## -->
+
+            {% if page == 'delete'%}
+                {% if id == 2%}
+                <div class="d-flex justify-content-center">
+                    <form method="POST" action="{{ url_for('proyect', page='delete_proyect', id=proyect_data.id_proyect) }}">
+                        {{ proyect_form.csrf_token() }}
+                        <div class="p-2"><p>Seguro que queres archivar este proyecto?</p></div>
+                        <div class="p-2">{{  wtf.form_field(proyect_form.submit , class="btn btn-primary_1 btn-xl" , style="color: white;"  , value='Archivar Proyecto') }}</div>
+                    </form>
+                </div>
+                {% else %}
+                <div class="d-flex justify-content-center">
+                    <form method="POST" action="{{ url_for('proyect', page='delete_proyect', id=id) }}">
+                        {{ proyect_form.csrf_token() }}
+                        <div class="p-2"><p>Seguro que queres archivar este proyecto?</p></div>
+                        <div class="p-2"></div>{{  wtf.form_field(proyect_form.submit , class="btn btn-primary_1 btn-xl" , style="color: white;"  , value='Archivar Proyecto') }}</div>
+                    </form>
+                </div> 
+                {% endif %}
+            {% endif %}
+
+            <!-- ############################################################## -->
+
+            {% if page == 'update'%}
+
+                <form method="POST" action="{{ url_for('proyect', page='create_user', id=proyect_update.id_proyect) }}">
+                    {{ user_proyect_form.csrf_token() }}
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <select name='ddlUsers' class="form-control" >
+                                {% for u in users %}
+                                    <option value="{{ u.id_user }}" selected>{{ u.email_address }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                        {{ wtf.form_field(user_proyect_form.submit , class="btn btn-primary_1 btn-xl" , style="color: white;") }}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th scope="col">usuario</th>
+                                    <th scope="col">eliminar</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for x, y in users_dict.items() %}
+                                    <tr>
+                                    <td>{{ y }}</td>
+                                    <td><a class="dropdown-item" href="{{ url_for('proyect', page='delete_dict_user', id=x , p=proyect_update.id_proyect) }}">X</a></td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% for up  in users_proyect %}
+                                        {% if users_proyect != None %}
+                                        <tr>
+                                            <td>{{ up._user.email_address }}</td>
+                                            <td><a class="dropdown-item" href="{{ url_for('proyect', page='delete_user_proyect', id=up.id_proyect , p=up.id_proyect , pu = up.id_proyect_users) }}">X</a></td>
+                                        </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>  
+                </form>
+
+
+                <form method="POST" action="{{ url_for('proyect', page='update_proyect', id=proyect_update.id_proyect) }}">
+                    {{ proyect_form.csrf_token() }}
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            {{ wtf.form_field(proyect_form.proyect_name , class="form-control" , value=proyect_update.proyect_name) }}
+                        </div>
+                        <div class="form-group col-md-6">
+                            {{ proyect_form.proyect_type.label }}
+                            <select name='ddlptype' class="form-control">
+                                <option value="{{ proyect_update.id_proyect_type }}" selected>{{ proyect_update._proyect_type.description }}</option> 
+                                {% for t in types %}
+                                    <option value="{{ t.id_proyect_type }}">{{ t.description }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            {{ proyect_form.id_client.label }}
+                            <select name='ddlclients' class="form-control">
+                                <option value="{{ proyect_update.id_user }}" selected>{{ proyect_update._proyect_client.company_name }}</option> 
+                                {% for c in clients %}
+                                    <option value="{{ c.id_user}}">{{ c.company_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                        {{ proyect_form.id_proyect_status.label }}
+                            <select name='ddlpstatus' class="form-control">
+                                <option value="{{ proyect_update.id_proyect_status }}" selected>{{ proyect_update._proyect_status.description }}</option> 
+                                {% for s in status_proyect %}
+                                    <option value="{{ s.id_proyect_status}}">{{ s.description }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            {{ wtf.form_field(proyect_form.start_date, class="form-control", value= start_date ) }}
+                        </div>
+                        <div class="form-group col-md-5">
+                            {{ wtf.form_field(proyect_form.end_date, class="form-control", value= end_date) }}
+                        </div>
+                        <div class="form-group col-md-2">
+                        {{ wtf.form_field(proyect_form.hours_estimate , class="form-control" , value=proyect_update.hours_estimate ) }}
+                        </div>
+                    </div>
+                        {{  wtf.form_field(proyect_form.submit, class="btn btn-primary_1 btn-xl" , style="color: white;" , value='Modificar Proyecto') }}
+                </form>
+            {% endif %}
+
+            <!-- ############################################################## -->
+
+            <div class="d-flex justify-content-center text-center">
+                {% for message in get_flashed_messages() %}
+                    <div class="p-2">{{ message }}</div>
+                {% endfor  %}
+            </div>
+        </div>
+    </div>
+</div>     
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+{% endblock %}

@@ -1,0 +1,409 @@
+{% extends 'base_dash.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{%block head%}
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'></script>
+    {{ super() }}
+    <style>
+        .dot {
+        height: 10px;
+        width: 10px;
+        background-color:gold;
+        border-radius: 50%;
+        display: inline-block;
+        }
+    </style>
+{% endblock %}
+
+{%block nav%}
+    {{ super() }}
+{% endblock %}
+
+{% block info_contact%}
+    {% if  session['id_user_role']  == 2%}
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('proyect', page='index' , id=0)}}">Mis Proyectos</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('report')}}">Reportes</a>
+        </li>
+        {% if notifications.items %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if flag_read%}
+                        
+                    {% else %}
+                        <span class="dot" style="vertical-align: middle; margin-left: 1px; margin-right: 1px;"></span>
+                    {% endif %}
+                    Notificaciones
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                    {% for n in notifications.items%}
+                        {% if n.read%}
+                            
+                        {% else %}
+                            <a class="dropdown-item" href="">{{ n.description  }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if flag_read %}
+                        <a class="dropdown-item" href="">Sin notificaciones nuevas</a>
+                    {% endif %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                    <a class="dropdown-item" href="">Configuracion</a>
+                </div>
+            </li>
+        {% else %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Notificaciones
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                    <a class="dropdown-item" href="">Sin notificaciones</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                    <a class="dropdown-item" href="">Configuracion</a>
+                </div>
+            </li>
+        {% endif %}
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock %}
+
+{% block notification%}
+    {% if notifications.items %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% if flag_read%}
+                    
+                {% else %}
+                    <span class="dot" style="vertical-align: middle; margin-left: 1px; margin-right: 1px;"></span>
+                {% endif %}
+                Notificaciones
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                {% for n in notifications.items%}
+                    {% if n.read%}
+                        
+                    {% else %}
+                        <a class="dropdown-item" href="">{{ n.description  }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if flag_read %}
+                    <a class="dropdown-item" href="">Sin notificaciones nuevas</a>
+                {% endif %}
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                <a class="dropdown-item" href="">Configuracion</a>
+            </div>
+        </li>
+    {% else %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Notificaciones
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+            <a class="dropdown-item" href="">Sin notificaciones</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+            <a class="dropdown-item" href="">Configuracion</a>
+        </div>
+    </li>
+    {% endif %}
+{% endblock %}
+
+{% block menu%}
+ 
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-block: 15px;">
+    <div class="row">
+        <div class="col-sm-12">
+            <!-- ############################################################## -->
+
+            <div class="d-flex justify-content-between">
+                <div class="p-2"><h3>Reportes</div>
+                <div class="p-2"><a class="dropdown-item" href="{{url_for('report' , page = 'proyect_time')}}">Tiempo de proyectos</a></div>
+                <div class="p-2"><a class="dropdown-item" href="{{url_for('report' , page = 'count_proyect')}}">Cantidad de proyectos</a></div>
+                <div class="p-2"><a class="dropdown-item" href="{{url_for('report' , page = 'facturation')}}">Facturacion</a></div>
+                <div class="p-2"><a class="dropdown-item" href="{{url_for('report' , page = 'task_user')}}">Tareas x usuario</a></div>
+                <div class="p-2"><a class="dropdown-item" href="{{url_for('dashboard' , action='none')}}">Volver</a></div>
+            </div>
+            <hr>
+
+            <!-- ############################################################## -->
+
+            {% if page == 'proyect_time' %}
+                <div class="d-flex justify-content-center" style="padding: 20px;">
+                    <h3>{{ title }}</h3>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <canvas id="chart" width="600" height="400"></canvas>
+                    </div>
+                    <div class="form-group col-md-12" style="padding: 20px;">
+                        <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th scope="col">cantidad horas</th>
+                                <th scope="col">tipo de proyecto</th>
+                              </tr>
+                            </thead>
+                            <tbody> 
+                                {% for x, y in proyect_time %}
+                                    <tr>
+                                    <td>{{ y }}</td>
+                                    <td>{{ x }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <script>
+                    // bar chart data
+                    var barData = {
+                        labels : [
+                        {% for item in labels %}
+                        "{{ item }}",
+                        {% endfor %}
+                    ],
+        
+                        datasets : [{
+                        fillColor: "rgba(151,187,205,0.2)",
+                        strokeColor: "rgba(151,187,205,1)",
+                        pointColor: "rgba(151,187,205,1)",
+                        data : [
+                            {% for item in values %}
+                            "{{ item }}",
+                            {% endfor %}
+                        ]
+                        }
+                        ]
+                    }
+        
+                    // get bar chart canvas
+                    var mychart = document.getElementById("chart").getContext("2d");
+        
+                    steps = 10
+                    max = {{max}}
+        
+                    // draw bar chart
+                    new Chart(mychart).Bar(barData, {
+                    scaleOverride: true,
+                    scaleSteps: steps,
+                    scaleStepWidth: Math.ceil(max / steps),
+                    scaleStartValue: 0,
+                    scaleShowVerticalLines: true,
+                    scaleShowGridLines : true,
+                    barShowStroke : true,
+                    scaleShowLabels: true
+                    }
+                    );
+        
+                </script>
+
+                
+            <!-- ############################################################## -->
+
+            {% elif page == 'count_proyect' %}
+                <div class="d-flex justify-content-center" style="padding: 20px;">
+                    <h3>{{ title }}</h3>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <canvas id="chart" width="600" height="400"></canvas>
+                    </div>
+                    <div class="form-group col-md-6" style="padding: 20px;">
+                        <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th scope="col">cantidad</th>
+                                <th scope="col">tipo de proyecto</th>
+                              </tr>
+                            </thead>
+                            <tbody> 
+                                {% for x, y in count_proyect %}
+                                    <tr>
+                                    <td>{{ x }}</td>
+                                    <td>{{ y }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                    <script>
+                        var pieData = [
+                            {% for item, label, colors in set %}
+                            {
+                                value: {{item}},
+                                label: "{{label}}",
+                                color : "{{colors}}"
+                            },
+                            {% endfor %}
+                        ];
+                    
+                        // get bar chart canvas
+                        var mychart = document.getElementById("chart").getContext("2d");
+                        steps = 10
+                        max = {{ max }}
+                    
+                        // draw pie chart
+                        new Chart(document.getElementById("chart").getContext("2d")).Pie(pieData);
+                    </script>
+
+
+            <!-- ############################################################## -->
+
+            {% elif page == 'facturation' %}
+            <div class="d-flex justify-content-center" style="padding: 20px;">
+                <h3>{{ title }}</h3>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <canvas id="chart" width="600" height="400"></canvas>
+                </div>
+                <div class="form-group col-md-12" style="padding: 20px;">
+                    <table class="table table-hover">
+                        <thead>
+                          <tr>
+                            <th scope="col">cantidad de facturacion</th>
+                            <th scope="col">tipo de proyecto</th>
+                          </tr>
+                        </thead>
+                        <tbody> 
+                            {% for x, y in facturation %}
+                                <tr>
+                                <td>{{ y }}</td>
+                                <td>{{ x }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <script>
+                // bar chart data
+                var barData = {
+                    labels : [
+                    {% for item in labels %}
+                    "{{ item }}",
+                    {% endfor %}
+                ],
+    
+                    datasets : [{
+                    fillColor: "rgba(151,187,205,0.2)",
+                    strokeColor: "rgba(151,187,205,1)",
+                    pointColor: "rgba(151,187,205,1)",
+                    data : [
+                        {% for item in values %}
+                        "{{ item }}",
+                        {% endfor %}
+                    ]
+                    }
+                    ]
+                }
+    
+                // get bar chart canvas
+                var mychart = document.getElementById("chart").getContext("2d");
+    
+                steps = 10
+                max = {{max}}
+    
+                // draw bar chart
+                new Chart(mychart).Bar(barData, {
+                scaleOverride: true,
+                scaleSteps: steps,
+                scaleStepWidth: Math.ceil(max / steps),
+                scaleStartValue: 0,
+                scaleShowVerticalLines: true,
+                scaleShowGridLines : true,
+                barShowStroke : true,
+                scaleShowLabels: true
+                }
+                );
+    
+            </script>
+
+            <!-- ############################################################## -->
+
+            {% elif page == 'task_user' %}
+                <div class="d-flex justify-content-between" style="padding: 20px;">
+                    <h3>{{ title }}</h3>
+                    <form method="POST" action="{{url_for('report' , page = 'task_user')}}">
+                        <div class="form-row">
+                            <div class="form-group col-md-8">
+                                <select name='ddlUsers' class="form-control" >
+                                    <option value="0" selected>Todos</option>
+                                    {% for u in users %}
+                                        <option value="{{ u.id_user }}">{{ u.email_address }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                {{ wtf.form_field(user_form.submit , class="btn btn-primary_1 btn-xl" , style="color: white;" ) }}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <canvas id="chart" width="600" height="400"></canvas>
+                    </div>
+                    <div class="form-group col-md-6" style="padding: 20px;">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">cantidad de tareas</th>
+                                <th scope="col">estado</th>
+                            </tr>
+                            </thead>
+                            <tbody> 
+                                {% for x, y in tareas_x_status %}
+                                    <tr>
+                                    <td>{{ x }}</td>
+                                    <td>{{ y }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <script>
+                        var doughnut = [
+                            {% for item, label, colors in set %}
+                            {
+                                value: {{item}},
+                                label: "{{label}}",
+                                color : "{{colors}}"
+                            },
+                            {% endfor %}
+                        ];
+                    
+                        // get bar chart canvas
+                        var mychart = document.getElementById("chart").getContext("2d");
+                        steps = 10
+                        max = {{ max }}
+                    
+                        // draw pie chart
+                        new Chart(document.getElementById("chart").getContext("2d")).Doughnut(doughnut);
+                </script>
+            {% else %}
+
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+    
+    {{ super() }}
+{% endblock %}

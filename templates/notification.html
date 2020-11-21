@@ -1,0 +1,207 @@
+{% extends 'base_dash.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{%block head%}
+    {{ super() }}
+    <style>
+        .dot {
+        height: 10px;
+        width: 10px;
+        background-color:gold;
+        border-radius: 50%;
+        display: inline-block;
+        }
+    </style>
+{% endblock %}
+
+{%block nav%}
+    {{ super() }}
+{% endblock %}
+
+{% block info_contact%}
+    {% if  session['id_user_role']  == 2%}
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('proyect', page='index' , id=0)}}">Mis Proyectos</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('report')}}">Reportes</a>
+        </li>
+        {% if notifications.items %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if flag_read%}
+                        
+                    {% else %}
+                        <span class="dot" style="vertical-align: middle; margin-left: 1px; margin-right: 1px;"></span>
+                    {% endif %}
+                    Notificaciones
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                    {% for n in notifications.items%}
+                        {% if n.read%}
+                            
+                        {% else %}
+                            <a class="dropdown-item" href="">{{ n.description  }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if flag_read %}
+                        <a class="dropdown-item" href="">Sin notificaciones nuevas</a>
+                    {% endif %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                    <a class="dropdown-item" href="">Configuracion</a>
+                </div>
+            </li>
+        {% else %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Notificaciones
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                    <a class="dropdown-item" href="">Sin notificaciones</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                    <a class="dropdown-item" href="">Configuracion</a>
+                </div>
+            </li>
+        {% endif %}
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock %}
+
+{% block notification%}
+    {% if notifications.items %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% if flag_read%}
+                    
+                {% else %}
+                    <span class="dot" style="vertical-align: middle; margin-left: 1px; margin-right: 1px;"></span>
+                {% endif %}
+                Notificaciones
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                {% for n in notifications.items%}
+                    {% if n.read%}
+                        
+                    {% else %}
+                        <a class="dropdown-item" href="">{{ n.description  }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if flag_read %}
+                    <a class="dropdown-item" href="">Sin notificaciones nuevas</a>
+                {% endif %}
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                <a class="dropdown-item" href="">Configuracion</a>
+            </div>
+        </li>
+    {% else %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Notificaciones
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+            <a class="dropdown-item" href="">Sin notificaciones</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+            <a class="dropdown-item" href="">Configuracion</a>
+        </div>
+    </li>
+    {% endif %}
+{% endblock %}
+
+{% block menu%}
+ 
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-block: 15px;">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="d-flex justify-content-between">
+                <h3>Notificaciones</h3>
+                <div class="p-2"><a class="dropdown-item" href="{{url_for('dashboard' , action='none')}}"><i class="fa fa-hand-o-left" aria-hidden="true"></i></a></div>
+            </div>
+            <hr>
+            {% if page != 'notification_form' %}
+
+            <div class="d-flex justify-content-center">
+                <div class="p-2"><a class="nav-link" href="{{url_for('notification', page='marcar_leidas' , u = u , pages=1)}}">Marcar como leido</a></div>
+                <div class="p-2"><a class="nav-link" href="{{url_for('notification', page='configuracion' , u = u , pages=1)}}">Configuracion</a></div>
+            </div>
+            <ul class="list-group">
+                {% if user.config_proyect == True or user.config_task == True %}
+                    {% for n in notifications.items %}
+                        {% if n.id_task %}
+                            {% if user.config_task %}
+                                {% if n.read %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center"> {{n.description}}
+                                        <span class="btn btn-primary_1 btn-xl" style="color: white;"><a href="{{ url_for('task' , page='view' , id=n.id_task) }}" style="color: white; padding: 10px;"> Ver tarea </a></span>
+                                    </li>
+                                {% else %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center" style="background-color: darkgrey;"> {{n.description}}
+                                        <span class="btn btn-primary_1 btn-xl" style="color: white;"><a href="{{ url_for('task' , page='view' , id=n.id_task) }}" style="color: white; padding: 10px;"> Ver tarea </a></span>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            {% if user.config_proyect %}
+                                {% if n.read %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center"> {{n.description}}
+                                        <span class="btn btn-primary_1 btn-xl" style="color: white;"><a href="{{ url_for('proyect' , page='ver_index' , id=n.id_proyect) }}" style="color: white; padding: 10px;"> Ver proyecto </a></span>
+                                    </li>
+                                {% else %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center" style="background-color: darkgrey;"> {{n.description}}
+                                        <span class="btn btn-primary_1 btn-xl" style="color: white;"><a href="{{ url_for('proyect' , page='ver_index' , id=n.id_proyect) }}" style="color: white; padding: 10px;"> Ver proyecto </a></span>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="d-flex justify-content-center">
+                        <span style="color: black; padding: 20px;">Cambiar configuracion para ver notificaciones de proyectos y tareas</span>
+                    </div>
+                {% endif%} 
+            </ul>
+            <div class="d-flex justify-content-center">
+                <div class=pagination>
+                    {% for page in notifications.iter_pages() %}
+                        {% if page %}
+                            {% if page != notifications.page %}
+                                <div class="p-2"><a href="{{url_for('task' , page = 'view_all_tasks' , id = 0 , pages = page)}}">{{ page }}</a></div>
+                            {% else %}
+                                <div class="p-2"><strong>{{ page }}</strong></div>
+                            {% endif %}
+                        {% else %}
+                            <div class="p-2"><span class=ellipsis>…</span></div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% else %}
+
+            <!-- ############################################################## -->
+
+                {{ confi_form.csrf_token() }}
+                <div class="d-flex justify-content-center">
+                    <form method="POST" action="{{url_for('notification', page='update_configuracion' , u = u , pages=1)}}">
+                        {{ wtf.form_field(confi_form.check_proyect_notification , class="form-control"  ) }}
+                        {{ wtf.form_field(confi_form.check_proyect_task , class="form-control" ) }}
+                        {{ wtf.form_field(confi_form.submit , class="form-control" , class="btn btn-primary_1 btn-xl" , style="color: white;" ) }}
+                    </form>
+                </div>
+
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+{% endblock %}

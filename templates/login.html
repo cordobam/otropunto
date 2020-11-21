@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block info_contact%}
+
+{% endblock %}
+
+{% block menu%}
+  <a class="dropdown-item" href="{{url_for('index')}}">Home</a>
+{% endblock %}
+
+{% block principal %}
+<div class="container">
+    <div class="row">
+      <div class="col-sm-8">
+        <img src="../static/images/logo-14-removebg-preview.png">
+      </div>
+      <div class="col-sm-4" style="background-color:gray ; border-radius: 15px; color: white; display: inline; vertical-align: middle;">
+        <div class="container" style="position: relative; top: 25%;">
+          <div>
+            <form action="" method="post">
+              {{ login_form.csrf_token() }}
+              {{ wtf.form_field(login_form.username) }}
+              {{ wtf.form_field(login_form.password) }}
+              {{ wtf.form_field(login_form.submit, class='btn btn-primary btn-xl') }}
+              <a class="nav-link" style="padding-top: 15px; color: white;" href="{{ url_for('password' , email='none') }}">Olvido Contraseña?</a>
+            </form>
+            {% for message in get_flashed_messages() %}
+              <div class="alert-error">{{ message }}</div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+{% endblock %}

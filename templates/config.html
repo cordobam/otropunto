@@ -1,0 +1,378 @@
+{% extends 'base_dash.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{%block head%}
+    {{ super() }}
+    <style>
+        .dot {
+        height: 10px;
+        width: 10px;
+        background-color:gold;
+        border-radius: 50%;
+        display: inline-block;
+        }
+    </style>
+{% endblock %}
+
+{%block nav%}
+    {{ super() }}
+{% endblock %}
+
+{% block info_contact%}
+    {% if  session['id_user_role']  == 2%}
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('proyect', page='index' , id=0)}}">Mis Proyectos</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('report')}}">Reportes</a>
+        </li>
+        {% if notifications.items %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if flag_read%}
+                        
+                    {% else %}
+                        <span class="dot" style="vertical-align: middle; margin-left: 1px; margin-right: 1px;"></span>
+                    {% endif %}
+                    Notificaciones
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                    {% for n in notifications.items%}
+                        {% if n.read%}
+                            
+                        {% else %}
+                            <a class="dropdown-item" href="">{{ n.description  }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if flag_read %}
+                        <a class="dropdown-item" href="">Sin notificaciones nuevas</a>
+                    {% endif %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                    <a class="dropdown-item" href="">Configuracion</a>
+                </div>
+            </li>
+        {% else %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Notificaciones
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                    <a class="dropdown-item" href="">Sin notificaciones</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                    <a class="dropdown-item" href="">Configuracion</a>
+                </div>
+            </li>
+        {% endif %}
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock %}
+
+{% block notification%}
+    {% if notifications.items %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% if flag_read%}
+                    
+                {% else %}
+                    <span class="dot" style="vertical-align: middle; margin-left: 1px; margin-right: 1px;"></span>
+                {% endif %}
+                Notificaciones
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                {% for n in notifications.items%}
+                    {% if n.read%}
+                        
+                    {% else %}
+                        <a class="dropdown-item" href="">{{ n.description  }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if flag_read %}
+                    <a class="dropdown-item" href="">Sin notificaciones nuevas</a>
+                {% endif %}
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                <a class="dropdown-item" href="">Configuracion</a>
+            </div>
+        </li>
+    {% else %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Notificaciones
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+            <a class="dropdown-item" href="">Sin notificaciones</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+            <a class="dropdown-item" href="">Configuracion</a>
+        </div>
+    </li>
+    {% endif %}
+{% endblock %}
+
+{% block menu%}
+    
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-block: 15px;">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <!-- ############################################################## -->
+
+            <div class="d-flex justify-content-between">
+                <div class="p-2"><h3>Usuarios</div>
+
+                {% if session['id_user_role'] == 1  %}
+                    <div class="p-2"><a class="dropdown-item" href="{{ url_for('configuration', action='crear' , email='none') }}">Dar de alta</a></div>
+                    <div class="p-2"><a class="dropdown-item" href="{{ url_for('configuration' , action='modificar' , email='none') }}">Modificar</a></div>
+                    <div class="p-2"><a class="dropdown-item" href="{{ url_for('configuration', action='eliminar', email='none') }}">Dar de baja</a></div>
+                    <div class="p-2"><a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Notificaciones</a></div>
+                    <div class="p-2"><a class="dropdown-item" href="{{url_for('dashboard' , action='none')}}">Volver</a></div>
+                {% else %}
+                    <div class="p-2"><a class="dropdown-item" href="{{ url_for('configuration' , action='modificar' , email='none') }}">Modificar</a></div>
+                    <div class="p-2"><a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Notificaciones</a></div>
+                    <div class="p-2"><a class="dropdown-item" href="{{url_for('dashboard' , action='none')}}">Volver</a></div>
+                {% endif %}
+            </div>
+            <hr>
+
+            <!-- ############################################################## -->
+
+            {% if action == 'crear' and session['id_user_role'] == 1 %}
+                <form method="POST">
+                    {{ user_create.csrf_token() }}
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            {{ wtf.form_field(user_create.company_name, class="form-control") }}
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{ wtf.form_field(user_create.username, class="form-control") }}
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{ wtf.form_field(user_create.password, class="form-control") }}
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{ user_create.country.label }}
+                            <select name='ddlcountry' class="form-control">
+                                {% for c in country %}
+                                    <option value="{{ c.id_country }}" selected>{{ c.description }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{ user_create.state.label }}
+                            <select name='ddlstate' class="form-control">
+                                {% for s in state %}
+                                    <option value="{{ s.id_country_state }}" selected>{{ s.description }}</option>
+                                {% endfor %}
+                            </select>                            
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{ user_create.role.label }}
+                            <select name='ddlroles' class="form-control">
+                                {% for r in roles %}
+                                    <option value="{{ r.id_user_role }}" selected>{{ r.description }}</option>
+                                {% endfor %}
+                            </select>                            
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button type="submit" class="btn btn-primary_1 btn-xl" style="color: white;">Crear Usuario</button>
+                        </div>
+                    </div>
+                </form>                   
+            {% endif %}
+ 
+        
+            <!-- ############################################################## -->
+
+            {% if action == 'modificar' and session['id_user_role'] == 1 and email == 'none' %}
+                <ul class="list-group">
+                    {% for u in users  %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center"> {{ u.email_address }} 
+                            <span class="btn btn-primary_1 btn-xl" style="color: white;"><a href="{{ url_for('configuration', action='modificar', email=u.email_address) }}" style="color: white; padding: 10px;"> Modificar </a></span>
+                        </li>
+                    {%endfor%} 
+                </ul>
+            {% endif %}
+            {% if action == 'modificar' and session['id_user_role'] == 1 and email != 'none' %}
+                <form method="POST">
+                    {{ user_update.csrf_token() }}
+                    <div class="form-row">
+                        <div class="form-group col-md-6" >
+                            {{ wtf.form_field(user_update.company_name, class="form-control" , value= user_modif.company_name ) }}
+                        </div>
+                        <div class="form-group col-md-6">
+                            {{ user_create.country.label }}
+                            <select name='ddlcountry' class="form-control">
+                                <option value="{{ user_modif.id_country }}">{{ user_modif._country.description }}</option> 
+                                {% for c in country %}
+                                    <option value="{{ c.id_country }}">{{ c.description }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            {{ user_create.state.label }}
+                            <select name='ddlstate' class="form-control">
+                                <option value="{{ user_modif.id_state }}">{{ user_modif._state.description }}</option> 
+                                {% for s in state %}
+                                    <option value="{{ s.id_country_state }}">{{ s.description }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            {{ user_create.role.label }}
+                            <select name='ddlroles' class="form-control">
+                                <option value="{{ user_modif.id_user_role }}">{{ user_modif._role.description }}</option> 
+                                {% for r in roles %}
+                                    <option value="{{ r.id_user_role }}">{{ r.description }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button type="submit" class="btn btn-primary_1 btn-xl" style="color: white;">Modificar Usuario</button>
+                        </div>
+                    </div>
+                </form>
+            {% endif %}
+            {% if action == 'modificar' and session['id_user_role'] != 1 and email == 'none' %}
+                <form method="POST">
+                    {{ user_update.csrf_token() }}
+                    <div class="form-row">
+                        <div class="form-group col-md-4" >
+                            {{ wtf.form_field(user_update.company_name, class="form-control" , value= user_modif.company_name ) }}
+                        </div>
+                        <div class="form-group col-md-4" >
+                            {{ user_create.country.label }}
+                            <select name='ddlcountry' class="form-control">
+                                <option value="{{ user_modif.id_country }}">{{ user_modif._country.description }}</option> 
+                                {% for c in country %}
+                                    <option value="{{ c.id_country }}">{{ c.description }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4" >
+                            {{ user_create.state.label }}
+                            <select name='ddlstate' class="form-control">
+                                <option value="{{ user_modif.id_state }}">{{ user_modif._state.description }}</option> 
+                                {% for s in state %}
+                                    <option value="{{ s.id_country_state }}">{{ s.description }}</option>
+                                {% endfor %}
+                            </select>                            
+                        </div>
+                        <div class="form-group col-md-6" >
+                            <button type="submit" class="btn btn-primary_1 btn-xl" style="color: white;">Modificar Usuario</button>                            
+                        </div>
+                    </div>
+                </form>
+            {% endif %}
+
+
+            <!-- ############################################################## -->
+
+            {% if action == 'eliminar' and session['id_user_role'] == 1 and email == 'none' %}
+                    <form method="POST" action="{{ url_for('configuration', action='eliminar', email='buscar') }}">
+                        {{ user_create.csrf_token() }}
+                        <div class="form-row">
+                            <div class="form-group col-md-3" >
+
+                            </div>
+                            <div class="form-group col-md-4" style="padding-top: 24px;">
+                                {{ wtf.form_field(delete_form.email_to_modif,  class="form-control" , placeholder="Buscar email") }}    
+                            </div>
+                            <div class="form-group col-md-2" style="padding-top: 32px;" >
+                                {{ wtf.form_field(delete_form.submit ,class="btn btn-primary_1 btn-xl" , style="color: white;", value= 'Buscar' ) }}
+                            </div>
+                            <div class="form-group col-md-3" >
+
+                            </div>
+                        </div>
+                    </form>
+            {% endif %}
+            {% if action == 'eliminar' and session['id_user_role'] == 1 and email == 'buscar' %}
+                {% if user_modif is not none %}
+                    <form method="POST" action="{{ url_for('configuration', action='eliminar', email=user_modif.email_address) }}" >
+                        <div class="form-row">
+                            <div class="form-group col-md-3" >
+
+                            </div>
+                            <div class="form-group col-md-3" style="padding-top: 25px;" >
+                                {{user_modif.email_address}}
+                            </div>
+                            <div class="form-group col-md-3" style="padding-top: 25px;">
+                                {% if user_modif.flag_delete == 'inactivo' %}
+                                    {{ wtf.form_field(delete_form.submit , class='floating-input' , value= 'Dado de baja' ) }}
+                                {% else %}
+                                    {{ wtf.form_field(delete_form.submit , class='floating-input' , value= 'Dar de baja' ) }}
+                                {% endif %}
+                            </div>
+                            <div class="form-group col-md-3" >
+
+                            </div>
+                        </div>
+                    </form>
+                {% else %}
+                <div class="d-flex justify-content-center text-center" style="padding-top: 20px;">
+                    Ingrese un email valido
+                </div>
+                {%endif %}
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <ul class=flashes>
+                        {% for message in messages %}
+                        <li>{{ message }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
+            {% if action == 'eliminar' and session['id_user_role'] != 1 and email == 'none' %}
+                <form method="POST" action="{{ url_for('configuration', action='eliminar', email=user_modif.email_address) }}" >
+                    <div class="form-row">
+                        <div class="form-group col-md-3" >
+
+                        </div>
+                        <div class="form-group col-md-3" style="padding-top: 25px;" >
+                            {{user_modif.email_address}}
+                        </div>
+                        <div class="form-group col-md-3" style="padding-top: 25px;">
+                            {{ wtf.form_field(delete_form.submit , class='floating-input' , value= 'Dar de baja' ) }}
+                        </div>
+                        <div class="form-group col-md-3" >
+
+                        </div>
+                    </div>
+                </form>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class=flashes>
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+                {% endwith %}
+            {% endif %}
+            {% if action == 'eliminar' and session['id_user_role'] == 1 %}
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <ul class=flashes>
+                        {% for message in messages %}
+                        <li>{{ message }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+{% endblock %}

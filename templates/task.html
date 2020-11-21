@@ -1,0 +1,470 @@
+{% extends 'base_dash.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{%block head%}
+    {{ super() }}
+<!-- <style>
+    .control-label {display: none;}
+</style> -->
+<style>
+    #circle {
+      width: 25px;
+      height: 25px;
+      -webkit-border-radius: 25px;
+      -moz-border-radius: 25px;
+      border-radius: 25px;
+      background: blueviolet;
+      margin-inline: 1px;
+      margin-bottom: 15px;
+    }
+    .dot {
+        height: 10px;
+        width: 10px;
+        background-color:gold;
+        border-radius: 50%;
+        display: inline-block;
+        }
+</style>
+{% endblock %}
+
+{%block nav%}
+    {{ super() }}
+{% endblock %}
+
+{% block info_contact%}
+    {% if  session['id_user_role']  == 2%}
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('proyect', page='index' , id=0)}}">Mis Proyectos</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('report')}}">Reportes</a>
+        </li>
+        {% if notifications.items %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if flag_read%}
+                        
+                    {% else %}
+                        <span class="dot" style="vertical-align: middle; margin-left: 1px; margin-right: 1px;"></span>
+                    {% endif %}
+                    Notificaciones
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                    {% for n in notifications.items%}
+                        {% if n.read%}
+                            
+                        {% else %}
+                            <a class="dropdown-item" href="">{{ n.description  }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if flag_read %}
+                        <a class="dropdown-item" href="">Sin notificaciones nuevas</a>
+                    {% endif %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                    <a class="dropdown-item" href="">Configuracion</a>
+                </div>
+            </li>
+        {% else %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Notificaciones
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                    <a class="dropdown-item" href="">Sin notificaciones</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                    <a class="dropdown-item" href="">Configuracion</a>
+                </div>
+            </li>
+        {% endif %}
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock %}
+
+{% block notification%}
+    {% if notifications.items %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% if flag_read%}
+                    
+                {% else %}
+                    <span class="dot" style="vertical-align: middle; margin-left: 1px; margin-right: 1px;"></span>
+                {% endif %}
+                Notificaciones
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                {% for n in notifications.items%}
+                    {% if n.read%}
+                        
+                    {% else %}
+                        <a class="dropdown-item" href="">{{ n.description  }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if flag_read %}
+                    <a class="dropdown-item" href="">Sin notificaciones nuevas</a>
+                {% endif %}
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                <a class="dropdown-item" href="">Configuracion</a>
+            </div>
+        </li>
+    {% else %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Notificaciones
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+            <a class="dropdown-item" href="">Sin notificaciones</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+            <a class="dropdown-item" href="">Configuracion</a>
+        </div>
+    </li>
+    {% endif %}
+{% endblock %}
+
+{% block menu%}
+ 
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+
+        <!-- ############################################################## -->
+
+        <div class="d-flex justify-content-between">
+            <div class="p-2"><h3>Tareas</div>
+            {% if  page ==  'create' or page == 'update'  or page == 'view' or page == 'delete' %}
+                <div class="p-2"><a class="dropdown-item" href="{{url_for('proyect' , page = 'ver_index', id=p ,  p=p , action='active')}}">Volver</a></div>
+            {% elif  page == 'view_all_tasks' %}
+                <div class="p-2"><a class="dropdown-item" href="{{url_for('dashboard' , action='none')}}">Volver</a></div>
+            {% else %}
+                <div class="p-2"><a class="dropdown-item" href="{{url_for('dashboard' , action='none')}}">Volver</a></div>
+            {% endif %}
+        </div>
+        <hr>
+        <!-- ############################################################## -->
+        
+        {% if page == 'view_all_tasks'%}
+        <ul class="list-group">
+                {% for t in tasks.items %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center"> {{t.title}} | {{ t._proyect.proyect_name}} 
+                        <span class="btn btn-primary_1 btn-xl" style="color: white;"><a href="{{ url_for('task' , page='view' , id=t.id_task , p=t.id_proyect) }}" style="color: white; padding: 10px;"> Ver tarea </a></span>
+                    </li>
+                {% endfor %} 
+        </ul>
+        <div class="d-flex justify-content-center">
+            <div class=pagination>
+                {% for page in tasks.iter_pages() %}
+                    {% if page %}
+                        {% if page != tasks.page %}
+                            <div class="p-2"><a style="color: gray;" href="{{url_for('task' , page = 'view_all_tasks' , id = 0 , pages = page)}}">{{ page }}</a></div>
+                        {% else %}
+                            <div class="p-2"><strong>{{ page }}</strong></div>
+                        {% endif %}
+                    {% else %}
+                        <div class="p-2"><span class=ellipsis style="color: gray;">…</span></div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {%endif%}
+
+        <!-- ############################################################## -->
+
+        {% if page == 'create' %}
+            <form method="POST" action="{{ url_for('task', page='create_dict_task', id=0 , p=p) }}">
+                {{ task_user_form.csrf_token() }}
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <select name='ddlUsers' class="form-control">
+                            {% for u in users %}
+                                <option value="{{ u.id_user }}">{{ u.email_address }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        {{ wtf.form_field(task_user_form.submit , class="btn btn-primary_1 btn-xl" , style="color: white;") }}
+                    </div>
+                    <div class="form-group col-md-6">
+                        <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th scope="col">usuario</th>
+                                <th scope="col">eliminar</th>
+                              </tr>
+                            </thead>
+                            <tbody> 
+                                {% for x, y in task_dict.items() %}
+                                <tr>
+                                <td>{{ y }}</td>
+                                <td><a class="dropdown-item" href="{{ url_for('task', page='delete_dict_task', id=x , p=p) }}">X</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                          </table>
+                    </div>  
+                </div>   
+            </form>
+            <form method="POST" action="{{ url_for('task', page='create_task', id=p) }}">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        {{ wtf.form_field(task_form.title, class="form-control" ) }}
+                    </div>
+                    <div class="form-group col-md-4">
+                        {{ task_form.type_task.label }}
+                        <select name='ddltypetask' class="form-control">
+                            {% for tt in type_task %}
+                                <option value="{{ tt.id_type_task }}">{{ tt.description }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        {{ wtf.form_field(task_form.dt, class="form-control" ) }}
+                    </div>
+                    <div class="form-group col-md-12">
+                        {{ wtf.form_field(task_form.description, class="form-control" ) }}
+                    </div>
+                    <div class="form-group col-md-2">
+                        {{ wtf.form_field(task_form.submit, class="btn btn-primary_1 btn-xl" , style="color: white;" ) }}
+                    </div>
+                </div>
+            </form>
+        {% endif %}
+
+        <!-- ############################################################## -->
+
+        {% if page == 'update' %}
+         <form method="POST" action="{{ url_for('task', page='create_dict_task_', id=task.id_task , p=p) }}">
+            {{ task_user_form.csrf_token() }}
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <select name='ddlUsers' class="form-control">
+                        {% for u in users %}
+                            <option value="{{ u.id_user }}">{{ u.email_address }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-2">
+                    {{ wtf.form_field(task_user_form.submit , class="btn btn-primary_1 btn-xl" , style="color: white;" ) }}
+                </div>
+                <div class="form-group col-md-6">
+                    <table class="table table-hover">
+                        <thead>
+                          <tr>
+                            <th scope="col">usuario</th>
+                            <th scope="col">eliminar</th>
+                          </tr>
+                        </thead>
+                        <tbody> 
+                            {% for x, y in task_dict.items() %}
+                                <tr>
+                                <td>{{ y }}</td>
+                                <td><a class="dropdown-item" href="{{ url_for('task', page='delete_dict_task_', id=x , p=p , t = task.id_task) }}">X</a></td>
+                                </tr>
+                            {% endfor %}
+                            {% for ut in users_task %}
+                                {% if task != None %}
+                                    <tr>
+                                    <td>{{ ut._user.email_address }}</td>
+                                    <td><a class="dropdown-item" href="{{ url_for('task', page='delete_task_', id=task.id_task , p=p , tu = ut.id_task_user) }}">X</a></td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                      </table>
+                </div>  
+            </div>   
+        </form>
+        <form method="POST" action="{{ url_for('task', page='update_task', id=id , p=p) }}">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ wtf.form_field(task_form.title, class="form-control" , value=task.title) }}
+                </div>
+                <div class="form-group col-md-6">
+                    {{ task_form.type_task.label }}
+                    <select name='ddltypetask' class="form-control">
+                        <option value="{{ task.id_type_task }}" selected>{{ task._type_task.description }}</option>
+                        {% for tt in type_task %}
+                            <option value="{{ tt.id_type_task }}">{{ tt.description }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    {{ task_form.status.label }}
+                    <select name='ddlstatus' class="form-control">
+                        <option value="{{ task.id_status }}" selected>{{ task._status.description }}</option>
+                        {% for s in status %}
+                            <option value="{{ s.id_status }}">{{ s.description }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    {{ wtf.form_field(task_form.dt, class="form-control" , value=end_date) }}
+                </div>
+                <div class="form-group col-md-12">
+                    {{ wtf.form_field(task_form.description, class="form-control" ) }}
+                </div>
+                <div class="form-group col-md-4">
+                    {{ wtf.form_field(task_form.submit, class="btn btn-primary_1 btn-xl" , style="color: white;" , value='Modificar Tarea') }}
+                </div>
+            </div>
+        </form>
+        {% endif %}
+
+        <!-- ############################################################## -->
+
+        {% if page == 'view' %}
+            <div class="d-flex justify-content-end">
+                <div style="margin-inline: 2px;">Usuarios:</div>
+                {% for t in task_users %}
+                    <div class="" id="circle" style="text-align: center;" title="{{ t._user.email_address}}">{{ t._user.email_address[0:1]|capitalize }}</div>
+                {% endfor %}
+            </div>
+            <div class="card text-center">
+                <div class="card-header">
+                    {{ task._status.description }}
+                </div>
+                <div class="card-body">
+                <h5 class="card-title">{{ task.title }}</h5>
+                <p class="card-text">{{ task.description }}</p>
+                </div>
+                <div class="card-footer text-muted">
+                    Entrega : {{ task.end_date }}
+                    <a href="{{ url_for('advance' , page='task' , id=task.id_task , p=p) }}" class="btn btn-primary_1 btn-xl" style="color: white;">Ver Avances</a>
+                </div>
+            </div>
+
+            <div style="padding-top: 15px;"></div>
+
+            <div class="card text-center" >
+                <div class="card-header">
+                    Materiales
+                </div>
+                <div class="card-body" >
+                    {% if assets != None %}
+                        {% for a in assets %}
+                        <div class="card border-secondary mb-12">
+                            <div class="card-body text-dark">
+                                <h5 class="card-title"> Usuario: {{ a._assets._user.email_address }}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ a._assets.create_date }}</h6>
+                                <p class="card-text"> 
+                                    <a href="{{ a._assets.url_asset }}"> {{ a._assets.description }}</a> - 
+                                    <a href="{{ url_for('task', page='delete_assets', id=a.id_task , p=p , a = a.id_task_assets) }}">Eliminar</a>
+                                </p>
+                            </div>
+                        </div>
+                        <div style="padding: 5px;"></div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="card-footer text-muted">
+                    <form method="POST" action="{{ url_for('task', page='assets', id=task.id_task , p=p) }}" class="form-inline">  
+                        <div class="form-group col-md-4">
+                            {{ wtf.form_field(assets_form.tittle, class="form-control") }}
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{ wtf.form_field(assets_form.asseturl, class="form-control") }}
+                        </div>
+                        <div class="form-group col-md-2">
+                            {{ wtf.form_field(assets_form.submit, class="btn btn-primary_1 btn-xl" , style="color: white;") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div style="padding-top: 15px;"></div>
+
+            <div class="card text-center" >
+                <div class="card-header">
+                    Comentarios
+                </div>
+                <div class="card-body">
+                    {% for c in comments %}
+                        {% if c.feedback_asset != 'Comentario' %}
+                            <p>En respuesta a {{c.feedback_asset}}</p>
+                        {% endif %}
+                        <div class="card border-secondary mb-12">
+                            <div class="card-body text-dark">
+                                <h5 class="card-title"> Usuario: {{ c._user.email_address }}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ c.create_date }}</h6>
+                                <p class="card-text">{{ c.comments_ }} </p>
+                                <p class="card-text"><a href="{{ url_for('task', page='delete_comment', id=c.id_task , p=p , c = c.id_comments) }}">Eliminar</a>
+                                <a href="{{ url_for('task', page='update_comment', id=c.id_task , p=p , c = c.id_comments) }}">Actualizar</a></p>
+                            </div>
+                        </div>
+                        <div style="padding: 5px;"></div>
+                    {% endfor %}
+                </div>
+                {% if page == 'view' and comment != None %}
+                    <div class="card-footer text-muted">
+                        <form method="POST" action="{{ url_for('task', page='update_comment', id=task.id_task , p=p , c=c) }}" class="form-inline">  
+                            <div class="form-group col-md-4">
+                                <select name='ddlassets' class="form-control" >
+                                    <option value="{{comment.feedback_asset}}" selected>{{comment.feedback_asset}}</option> 
+                                    {% for a in assets %}
+                                        <option value="{{ a._assets.description }}">{{ a._assets.description}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                {{ wtf.form_field(comment_form.comments_, class="form-control" , value =comment.comments_ ) }}
+                            </div>
+                            <div class="form-group col-md-2">
+                                {{ wtf.form_field(comment_form.submit, class="btn btn-primary_1 btn-xl" , style="color: white;") }}
+                            </div>
+                        </form>
+                    </div>                
+                {% else %}
+                    <div class="card-footer text-muted">
+                        <form method="POST" action="{{ url_for('task', page='comment', id=task.id_task , p=p) }}" class="form-inline">  
+                            <div class="form-group col-md-4">
+                                <select name='ddlassets' class="form-control" >
+                                    <option value="Comentario" selected>Comentario</option> 
+                                    {% for a in assets %}
+                                        <option value="{{ a._assets.description }}">{{ a._assets.description}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                {{ wtf.form_field(comment_form.comments_, class="form-control") }}
+                            </div>
+                            <div class="form-group col-md-2">
+                                {{ wtf.form_field(comment_form.submit, class="btn btn-primary_1 btn-xl" , style="color: white;") }}
+                            </div>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <!-- ############################################################## -->
+
+        {% if page == 'delete' %}
+            <div class="d-flex justify-content-center">
+                <form method="POST" action="{{ url_for('task', page='delete_task', id=id , p=p) }}">
+                    <div class="p-2"><p>Esta seguro de archivar esta tarea?</p></div>
+                    <div class="p-2">{{ wtf.form_field(delete_form.submit, class="btn btn-primary_1 btn-xl" , style="color: white;" , value='Archivar') }}</div>
+                </form>
+            </div>
+        {% endif %}
+
+         <!-- ############################################################## -->
+
+        {% for message in get_flashed_messages() %}
+            <div class="d-flex justify-content-center">
+                <div class="p-2">{{ message }}</div>
+            </div>
+        {% endfor  %}
+        </div>
+    </div>
+</div> 
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+{% endblock %}

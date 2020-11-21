@@ -1,0 +1,311 @@
+{% extends 'base_dash.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{%block head%}
+    {{ super() }}
+    <style>
+        .dot {
+        height: 10px;
+        width: 10px;
+        background-color:gold;
+        border-radius: 50%;
+        display: inline-block;
+        }
+    </style>
+{% endblock %}
+
+{%block nav%}
+    {{ super() }}
+{% endblock %}
+
+{% block info_contact%}
+    {% if  session['id_user_role']  == 2%}
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('proyect', page='index' , id=0 )}}">Mis Proyectos</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('report')}}">Reportes</a>
+        </li>
+        {% if notifications.items %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if flag_read%}
+                        
+                    {% else %}
+                        <span class="dot" style="vertical-align: middle; margin-left: 1px; margin-right: 1px;"></span>
+                    {% endif %}
+                    Notificaciones
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                    {% for n in notifications.items%}
+                        {% if n.read%}
+                            
+                        {% else %}
+                            <a class="dropdown-item" href="">{{ n.description  }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if flag_read %}
+                        <a class="dropdown-item" href="">Sin notificaciones nuevas</a>
+                    {% endif %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                    <a class="dropdown-item" href="">Configuracion</a>
+                </div>
+            </li>
+        {% else %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Notificaciones
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                    <a class="dropdown-item" href="">Sin notificaciones</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                    <a class="dropdown-item" href="">Configuracion</a>
+                </div>
+            </li>
+        {% endif %}
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock %}
+
+{% block notification%}
+    {% if notifications.items %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% if flag_read%}
+                    
+                {% else %}
+                    <span class="dot" style="vertical-align: middle; margin-left: 1px; margin-right: 1px;"></span>
+                {% endif %}
+                Notificaciones
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                {% for n in notifications.items%}
+                    {% if n.read%}
+                        
+                    {% else %}
+                        <a class="dropdown-item" href="">{{ n.description  }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if flag_read %}
+                    <a class="dropdown-item" href="">Sin notificaciones nuevas</a>
+                {% endif %}
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                <a class="dropdown-item" href="">Configuracion</a>
+            </div>
+        </li>
+    {% else %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Notificaciones
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+            <a class="dropdown-item" href="">Sin notificaciones</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+            <a class="dropdown-item" href="">Configuracion</a>
+        </div>
+    </li>
+    {% endif %}
+{% endblock %}
+
+{% block menu%}
+ 
+{% endblock %}
+
+{% block content %}
+
+<!-- ############################################################## -->
+
+<div class="container" style="padding-block: 15px;">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="d-flex justify-content-between">
+                <div class="p-2"><h3>Factura</h3></div>
+                <div class="p-2"><a class="dropdown-item" title="Descargar" class="form-control" href="{{ url_for('invoice' , page='download' , p=proyect.id_proyect) }}"><i class="fa fa-download" aria-hidden="true"></i></a></div>
+                <div class="p-2"><a class="dropdown-item"  title="Facturas anteriores" class="form-control" href="{{ url_for('invoice' , page='facturacion' , p=proyect.id_proyect) }}"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></a></div>
+                <div class="p-2"><a class="dropdown-item" href="{{url_for('proyect' , page = 'ver_index', id=proyect.id_proyect ,  p=proyect.id_proyect , action='active')}}"><i class="fa fa-hand-o-left" aria-hidden="true"></i></a></div>  
+            </div>
+            <hr style="padding-bottom: 5px;">
+            <div class="col-sm-12 col-12 padding">
+            {% if page == 'invoice' %}
+                <div class="card">
+                    <div class="card-header p-4">
+                        <a class="pt-2 d-inline-block" href="index.html" data-abc="true">otropunto.com</a>
+                        <div class="float-right">
+                            {% if  invoice %}
+                            <h3 class="mb-0">Factura #{{invoice.id_invoice}}</h3>
+                            Fecha: {{invoice.create_date}}
+                            {% else %}
+                                <h3 class="mb-0">Factura #1</h3>
+                                Fecha: {{proyect.create_date}}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-sm-4">
+                                <h5 class="mb-3">De:</h5>
+                                <h5 class="text-dark mb-1">Otropunto</h5>
+                                <div>Argentina</div>
+                                <div>Email: otropunto.creative@gmail.com</div>
+                                <div>Cel: +54 3884761851 - +54 3888538224</div>
+                            </div>
+                            <div class="col-sm-4">
+                                <h5 class="mb-3">Para:</h5>
+                                <h5 class="text-dark mb-1">{{proyect._proyect_client.company_name}}</h5>
+                                <div>Email: {{proyect._proyect_client.email_address}}</div>
+                            </div>
+                            <div class="col-sm-4">
+                                <h5 class="mb-3">Descripcion:</h5>
+                                <div>Facturacion para el proyecto: {{proyect.proyect_name}} </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive-sm">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="center">#</th>
+                                        <th>Item</th>
+                                        <th>Descripcion</th>
+                                        <th class="right">Precio</th>
+                                        <th class="center">Ctd</th>
+                                        <th class="right">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        {% if proyect_costs.description == 'Facturacion por hora'%}
+                                            {% if proyect_tasks %}
+                                                    {% for pt in proyect_tasks %}
+                                                    <tr>
+                                                        {% if pt.id_type_task == 1 %}
+                                                            <td class="center">1</td>
+                                                            <td class="left strong">Desarrollo</td>
+                                                            <td class="left">{{proyect_costs.description}}</td>
+                                                            <td class="right">${{costs_dev.price}}</td> <!--precio unitario-->
+                                                            <td class="center">{{ pt.total_time }}</td> 
+                                                            <td class="right">${{  total }}</td>
+                                                        {% elif pt.id_type_task ==2 %}
+                                                            <td class="center">1</td>
+                                                            <td class="left strong">Diseño</td>
+                                                            <td class="left">{{proyect_costs.description}}</td>
+                                                            <td class="right">${{costs_d.price}}</td>
+                                                            <td class="center">{{ pt.total_time }}</td>
+                                                            <td class="right">${{  total_d }}</td>
+                                                        {% elif pt.id_type_task ==3 %}
+                                                            <td class="center">1</td>
+                                                            <td class="left strong">QA</td>
+                                                            <td class="left">{{proyect_costs.description}}</td>
+                                                            <td class="right">${{costs_t.price}}</td>
+                                                            <td class="center">{{ pt.total_time }}</td>
+                                                            <td class="right">${{  total_qa }}</td>
+                                                        {% elif pt.id_type_task == 4 %}
+                                                            <td class="center">1</td>
+                                                            <td class="left strong">Proyect Managment</td>
+                                                            <td class="left">{{proyect_costs.description}}</td>
+                                                            <td class="right">${{costs_pm.price}}</td>
+                                                            <td class="center">{{ pt.total_time }}</td>
+                                                            <td class="right">${{  total_pm}}</td>
+                                                        {% elif pt.id_type_task == 5 %}
+                                                            <td class="center">1</td>
+                                                            <td class="left strong">Analisis</td>
+                                                            <td class="left">{{proyect_costs.description}}</td>
+                                                            <td class="right">${{costs_a.price}}</td>
+                                                            <td class="center">{{ pt.total_time }}</td>
+                                                            <td class="right">${{ total_a }}</td>
+                                                        {% else %}
+                                                        
+                                                        {% endif %}
+                                                    </tr>
+                                                    {% endfor %}
+                                            {% endif %}
+                                        {% elif proyect_costs.description == 'Facturacion por plan'%}
+                                            <tr>
+                                                <td class="center">1</td>
+                                                <td class="left strong">{{ costs.description}}</td>
+                                                <td class="left">{{ costs.description}}</td>
+                                                <td class="right">${{ costs.price}}</td>
+                                                <td class="center">1</td>
+                                                <td class="right">${{ costs.price}}</td>
+                                            </tr>
+                                        {% else %}
+                                            <tr>
+                                                <td class="center">1</td>
+                                                <td class="left strong">Sin facturacion</td>
+                                                <td class="left">Sin facturacion</td>
+                                                <td class="right">$0</td>
+                                                <td class="center">1</td>
+                                                <td class="right">$0</td>
+                                            </tr>
+                                        {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-5">
+                            </div>
+                            <div class="col-lg-4 col-sm-5 ml-auto">
+                                <table class="table table-clear">
+                                    <tbody>
+                                        <tr>
+                                            <td class="left">
+                                                <strong class="text-dark">Total</strong> </td>
+                                            <td class="right">
+                                                {% if proyect_costs.description == 'Facturacion por hora'%}
+                                                    <strong class="text-dark">${{ total_final }}</strong> 
+                                                {% elif proyect_costs.description == 'Facturacion por plan'%}
+                                                    <strong class="text-dark">${{costs.price}}</strong>
+                                                {% else %}
+                                                    <strong class="text-dark">$0</strong>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <p class="mb-0">otropunto.com, Argentina.</p>
+                    </div>
+                </div> <!-- Termina la tarjeta de la factura-->
+                {% elif page == 'facturation' %}
+                    <ul class="list-group">
+                        {% for i in invoices %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center"> Factura nro {{i.id_invoice}} | Creada el: {{ i.create_date }} 
+                                <span class="badge badge-primary badge-pill"><a href="{{ url_for('invoice' ,  p=i.id_proyect , page = 'invoice' ) }}" style="color: white; padding: 10px;"> Ver factura </a></span>
+                            </li>
+                        {% endfor %} 
+                    </ul>
+                {% endif %}
+            </div>
+        </div> <!-- Termina la factura -->
+    </div>
+</div> 
+
+{% if ps == '2' %}
+    {% if proyect_costs.description == 'Facturacion por hora' or proyect_costs.description == 'Facturacion por plan' %}
+        <div class="d-flex justify-content-center" >
+            <div class="p-2"><a class="dropdown-item" style="color: black;" href="{{url_for('invoice' , page = 'close_facturation',  p=proyect.id_proyect )}}">Cerrar facturacion</a></div>  
+        </div>
+    {% endif %}
+{% endif %}
+
+<!-- ############################################################## -->
+
+<div class="d-flex justify-content-center text-center">
+    {% for message in get_flashed_messages() %}
+    <div class="p-2">{{ message }}</div>
+    {% endfor  %}
+</div>
+
+<!-- ############################################################## -->
+
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+{% endblock %}

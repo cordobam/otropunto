@@ -1,0 +1,336 @@
+{% extends 'base_dash.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{%block head%}
+    {{ super() }}
+    <script>
+        const drag = (event) => {
+        event.dataTransfer.setData("text/plain", event.target.id);
+        }
+
+        const allowDrop = (ev) => {
+        ev.preventDefault();
+        if (hasClass(ev.target,"dropzone")) {
+            addClass(ev.target,"droppable");
+        }
+        }
+
+        const clearDrop = (ev) => {
+            removeClass(ev.target,"droppable");
+        }
+
+        const drop = (event) => {
+        event.preventDefault();
+        const data = event.dataTransfer.getData("text/plain");
+        const element = document.querySelector(`#${data}`);
+        try {
+            // remove the spacer content from dropzone
+            event.target.removeChild(event.target.firstChild);
+            // add the draggable content
+            event.target.appendChild(element);
+            // remove the dropzone parent
+            unwrap(event.target);
+        } catch (error) {
+            console.warn("can't move the item to the same place")
+        }
+        updateDropzones();
+        }
+
+        const updateDropzones = () => {
+            /* after dropping, refresh the drop target areas
+            so there is a dropzone after each item
+            using jQuery here for simplicity */
+            
+            var dz = $('<div class="dropzone rounded" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="clearDrop(event)"> &nbsp; </div>');
+            
+            // delete old dropzones
+            $('.dropzone').remove();
+
+            // insert new dropdzone after each item   
+            dz.insertAfter('.card.draggable');
+            
+            // insert new dropzone in any empty swimlanes
+            $(".items:not(:has(.card.draggable))").append(dz);
+        };
+
+        // helpers
+        function hasClass(target, className) {
+            return new RegExp('(\\s|^)' + className + '(\\s|$)').test(target.className);
+        }
+
+        function addClass(ele,cls) {
+        if (!hasClass(ele,cls)) ele.className += " "+cls;
+        }
+
+        function removeClass(ele,cls) {
+        if (hasClass(ele,cls)) {
+            var reg = new RegExp('(\\s|^)'+cls+'(\\s|$)');
+            ele.className=ele.className.replace(reg,' ');
+        }
+        }
+
+        function unwrap(node) {
+            node.replaceWith(...node.childNodes);
+        }
+    </script>
+    <style>
+        .card.draggable {
+            margin-bottom: 1rem;
+            cursor: grab;
+        }
+
+        .droppable {
+            background-color: var(--success);
+            min-height: 120px;
+            margin-bottom: 1rem;
+        }
+        .dot {
+        height: 10px;
+        width: 10px;
+        background-color:gold;
+        border-radius: 50%;
+        display: inline-block;
+        }
+    </style>
+{% endblock %}
+
+{%block nav%}
+    {{ super() }}
+{% endblock %}
+
+{% block info_contact%}
+    {% if  session['id_user_role']  == 2%}
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('proyect', page='index' , id=0)}}">Mis Proyectos</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('report')}}">Reportes</a>
+        </li>
+        {% if notifications.items %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if flag_read%}
+                        
+                    {% else %}
+                        <span class="dot" style="vertical-align: middle; margin-left: 1px; margin-right: 1px;"></span>
+                    {% endif %}
+                    Notificaciones
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                    {% for n in notifications.items%}
+                        {% if n.read%}
+                            
+                        {% else %}
+                            <a class="dropdown-item" href="">{{ n.description  }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if flag_read %}
+                        <a class="dropdown-item" href="">Sin notificaciones nuevas</a>
+                    {% endif %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                    <a class="dropdown-item" href="">Configuracion</a>
+                </div>
+            </li>
+        {% else %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Notificaciones
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                    <a class="dropdown-item" href="">Sin notificaciones</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                    <a class="dropdown-item" href="">Configuracion</a>
+                </div>
+            </li>
+        {% endif %}
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock %}
+
+{% block notification%}
+    {% if notifications.items %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% if flag_read%}
+                    
+                {% else %}
+                    <span class="dot" style="vertical-align: middle; margin-left: 1px; margin-right: 1px;"></span>
+                {% endif %}
+                Notificaciones
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                {% for n in notifications.items%}
+                    {% if n.read%}
+                        
+                    {% else %}
+                        <a class="dropdown-item" href="">{{ n.description  }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if flag_read %}
+                    <a class="dropdown-item" href="">Sin notificaciones nuevas</a>
+                {% endif %}
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                <a class="dropdown-item" href="">Configuracion</a>
+            </div>
+        </li>
+    {% else %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Notificaciones
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+            <a class="dropdown-item" href="">Sin notificaciones</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+            <a class="dropdown-item" href="">Configuracion</a>
+        </div>
+    </li>
+    {% endif %}
+{% endblock %}
+
+{% block menu%}
+ 
+{% endblock %}
+
+{% block content %}
+
+
+<div class="container-fluid pt-3">
+    <div class="d-flex justify-content-between">
+        <h3 class="font-weight-light">Tablero</h3>
+        <div class="p-2"><a class="dropdown-item" href="{{ url_for('proyect' , page='ver_index' ,id=id , action = 'active') }}"><i class="fa fa-hand-o-left" aria-hidden="true"></i></a></div>
+    </div>
+    <hr>
+    <div class="row flex-row flex-sm-nowrap py-3">
+        <div class="col-sm-6 col-md-4 col-xl-3">
+            <div class="card bg-light">
+                <div class="card-body">
+
+                    <!-- ############################################################## -->
+
+                    <h6 class="card-title text-uppercase text-truncate py-2">Pendientes</h6>
+                    <div class="items border border-light">
+                        {% for t in task_proyect %}
+                            {% if t.id_status == 1%}
+                            <div class="card" style="width: 18rem;">
+                                <div class="card-body">
+                                <h5 class="card-title">{{t.title}}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{t.create_date}}</h6>
+                                {% if  session['id_user_role'] == 2 %}
+                                    <a href="{{ url_for('task' , page='update' , id=t.id_task , p = t.id_proyect) }}" class="card-link" title="Modificar estado" style="color: gray;"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                    <a href="{{ url_for('task' , page='view' , id=t.id_task , p = t.id_proyect ) }}" class="card-link" title="Ver tarea" style="color: gray;"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                                {% else %}
+                                    <a href="{{ url_for('task' , page='update' , id=t.id_task , p = t.id_proyect) }}" class="card-link" title="Modificar estado" style="color: gray;"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                    <a href="{{ url_for('task' , page='view' , id=t.id_task , p = t.id_proyect ) }}" class="card-link" title="Ver tarea" style="color: gray;"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                                    <a href="{{ url_for('tracking' , page='proyect' , id=t.id_task , p = t.id_proyect ) }}" class="card-link" title="Cargar horas" style="color: gray;"><i class="fa fa-clock-o" aria-hidden="true"></i></a>
+                                {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-xl-3">
+            <div class="card bg-light">
+                <div class="card-body">
+
+                    <!-- ############################################################## -->
+
+                    <h6 class="card-title text-uppercase text-truncate py-2">En progreso</h6>
+                    <div class="items border border-light">
+                        {% for t in task_proyect %}
+                            {% if t.id_status == 2%}
+                            <div class="card" style="width: 18rem;">
+                                <div class="card-body">
+                                <h5 class="card-title">{{t.title}}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{t.create_date}}</h6>
+                                {% if  session['id_user_role'] == 2 %}
+                                    <a href="{{ url_for('task' , page='update' , id=t.id_task , p = t.id_proyect) }}" class="card-link" title="Modificar estado" style="color: gray;"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                    <a href="{{ url_for('task' , page='view' , id=t.id_task , p = t.id_proyect ) }}" class="card-link" title="Ver tarea" style="color: gray;"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                                {% else %}
+                                    <a href="{{ url_for('task' , page='update' , id=t.id_task , p = t.id_proyect) }}" class="card-link" title="Modificar estado" style="color: gray;"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                    <a href="{{ url_for('task' , page='view' , id=t.id_task , p = t.id_proyect ) }}" class="card-link" title="Ver tarea" style="color: gray;"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                                    <a href="{{ url_for('tracking' , page='proyect' , id=t.id_task , p = t.id_proyect ) }}" class="card-link" title="Cargar horas" style="color: gray;"><i class="fa fa-clock-o" aria-hidden="true"></i></a>
+                                {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-xl-3">
+            <div class="card bg-light">
+                <div class="card-body">
+
+                    <!-- ############################################################## -->
+
+                    <h6 class="card-title text-uppercase text-truncate py-2">Testing</h6>
+                    <div class="items border border-light">
+                        {% for t in task_proyect %}
+                            {% if t.id_status == 3%}
+                            <div class="card" style="width: 18rem;">
+                                <div class="card-body">
+                                <h5 class="card-title">{{t.title}}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{t.create_date}}</h6>
+                                {% if  session['id_user_role'] == 2 %}
+                                    <a href="{{ url_for('task' , page='update' , id=t.id_task , p = t.id_proyect) }}" class="card-link" title="Modificar estado" style="color: gray;"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                    <a href="{{ url_for('task' , page='view' , id=t.id_task , p = t.id_proyect ) }}" class="card-link" title="Ver tarea" style="color: gray;"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                                {% else %}
+                                    <a href="{{ url_for('task' , page='update' , id=t.id_task , p = t.id_proyect) }}" class="card-link" title="Modificar estado" style="color: gray;"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                    <a href="{{ url_for('task' , page='view' , id=t.id_task , p = t.id_proyect ) }}" class="card-link" title="Ver tarea" style="color: gray;"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                                    <a href="{{ url_for('tracking' , page='proyect' , id=t.id_task , p = t.id_proyect ) }}" class="card-link" title="Cargar horas" style="color: gray;"><i class="fa fa-clock-o" aria-hidden="true"></i></a>
+                                {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+
+                    <!-- ############################################################## -->
+                    
+                    <h6 class="card-title text-uppercase text-truncate py-2">Finalizada</h6>
+                    <div class="items border border-light">
+                        {% for t in task_proyect %}
+                            {% if t.id_status == 4%}
+                            <div class="card" style="width: 18rem;">
+                                <div class="card-body">
+                                <h5 class="card-title">{{t.title}}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{t.create_date}}</h6>
+                                {% if  session['id_user_role'] == 2 %}
+                                    <a href="{{ url_for('task' , page='update' , id=t.id_task , p = t.id_proyect) }}" class="card-link" title="Modificar estado" style="color: gray;"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                    <a href="{{ url_for('task' , page='view' , id=t.id_task , p = t.id_proyect ) }}" class="card-link" title="Ver tarea" style="color: gray;"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                                {% else %}
+                                    <a href="{{ url_for('task' , page='update' , id=t.id_task , p = t.id_proyect) }}" class="card-link" title="Modificar estado" style="color: gray;"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                    <a href="{{ url_for('task' , page='view' , id=t.id_task , p = t.id_proyect ) }}" class="card-link" title="Ver tarea" style="color: gray;"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                                    <a href="{{ url_for('tracking' , page='proyect' , id=t.id_task , p = t.id_proyect ) }}" class="card-link" title="Cargar horas" style="color: gray;"><i class="fa fa-clock-o" aria-hidden="true"></i></a>
+                                {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+{% endblock %}

@@ -1,0 +1,323 @@
+{% extends 'base_dash.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{%block head%}
+{{ super() }}
+<style>
+    .control-label {display: none;}
+    .content_section{visibility: hidden;}
+    .dot {
+    height: 10px;
+    width: 10px;
+    background-color:gold;
+    border-radius: 50%;
+    display: inline-block;
+    }
+</style>
+
+{% endblock %}
+
+{%block nav%}
+    {{ super() }}
+{% endblock %}
+
+{% block info_contact%}
+    {% if  session['id_user_role']  == 2%}
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('proyect', page='index' , id=0)}}">Mis Proyectos</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('report')}}">Reportes</a>
+        </li>
+        {% if notifications.items %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if flag_read%}
+                        
+                    {% else %}
+                        <span class="dot" style="vertical-align: middle; margin-left: 1px; margin-right: 1px;"></span>
+                    {% endif %}
+                    Notificaciones
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                    {% for n in notifications.items%}
+                        {% if n.read%}
+                            
+                        {% else %}
+                            <a class="dropdown-item" href="">{{ n.description  }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if flag_read %}
+                        <a class="dropdown-item" href="">Sin notificaciones nuevas</a>
+                    {% endif %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                    <a class="dropdown-item" href="">Configuracion</a>
+                </div>
+            </li>
+        {% else %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Notificaciones
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                    <a class="dropdown-item" href="">Sin notificaciones</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                    <a class="dropdown-item" href="">Configuracion</a>
+                </div>
+            </li>
+        {% endif %}
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock %}
+
+{% block notification%}
+    {% if notifications.items %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% if flag_read%}
+                    
+                {% else %}
+                    <span class="dot" style="vertical-align: middle; margin-left: 1px; margin-right: 1px;"></span>
+                {% endif %}
+                Notificaciones
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+                {% for n in notifications.items%}
+                    {% if n.read%}
+                        
+                    {% else %}
+                        <a class="dropdown-item" href="">{{ n.description  }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if flag_read %}
+                    <a class="dropdown-item" href="">Sin notificaciones nuevas</a>
+                {% endif %}
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+                <a class="dropdown-item" href="">Configuracion</a>
+            </div>
+        </li>
+    {% else %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Notificaciones
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 15px;">
+            <a class="dropdown-item" href="">Sin notificaciones</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{url_for('notification' , u = session['id_user'] , page = 1)}}">Ver todas</a>
+            <a class="dropdown-item" href="">Configuracion</a>
+        </div>
+    </li>
+    {% endif %}
+{% endblock %}
+
+{% block menu%}
+ 
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <!-- ############################################################## -->
+
+            <div class="d-flex justify-content-between">
+                <div class="p-2"><h3>Seguimiento de tiempo en tareas </h3></div>
+                <div class="p-2"><a class="dropdown-item" href="{{url_for('proyect' , page = 'ver_index', id=p ,  p=p , action='active')}}">Volver</a></div>
+            </div>
+            <hr>
+                <!-- ############################################################## -->
+                <div class="form-row">
+                    <div class="form-group col-md-12" style="text-align: center;">
+                        <h5>{{task.title}}</h5>
+                    </div>
+                    <div class="form-group col-md-12" style="text-align: center;">
+                        {% if total_hours_proyect <= 0 %}
+                            <h5>Horas restantes del proyecto: Proyecto sin horas restantes</h5>
+                        {% else %}
+                            <h5>Horas restantes del proyecto: {{total_hours_proyect}}</h5>
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-12" style="text-align: center;">
+                        <h1><time>00:00:00</time></h1>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <button id="start" class="btn btn-primary_1 btn-xl form-control"  style="color: white;">Empezar</button>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <button id="stop" class="btn btn-primary_1 btn-xl form-control"  style="color: white;">Terminar</button>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <button id="clear" class="btn btn-primary_1 btn-xl form-control"  style="color: white;">Limpiar</button>
+                    </div>  
+                </div>
+                <form method="POST" action="{{ url_for('tracking', page='create_time_hours', id=id , p=p) }}" style="padding: 20px;">
+                    <div class="form-row">
+                        {{ task_hour_form.csrf_token() }}
+                        <div class="form-group col-md-4">
+                            {{ wtf.form_field(task_hour_form.hours_start , class="form-control" ) }}
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{ wtf.form_field(task_hour_form.hours_end , class="form-control" ) }}
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{ wtf.form_field(task_hour_form.submit_create , class="btn btn-primary_1 btn-xl form-control" , style="color: white;" ) }}
+                        </div>
+                        <div class="form-group col-md-12">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th scope="col"> Total Horas</th>
+                                    <th scope="col"> Empezo</th>
+                                    <th scope="col"> Termino</th>
+                                    <th scope="col"> Usuario</th>
+                                    <th scope="col"> Eliminar</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for tt in task_track %}
+                                        <tr>
+                                            <td>{{tt.total_time}}</td>
+                                            <td>{{tt.initial_time_1}}</td>
+                                            <td>{{tt.final_time_1}}</td>
+                                            <td>{{tt._user.email_address}}</td>
+                                            <td><a class="dropdown-item" href="{{ url_for('tracking', page='delete_time', id=tt.id_time , p=p) }}" >X</a></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="d-flex" style="padding: 20px;">
+                    <div class="p-2"><button onclick="toggle_display()" class="btn btn-primary_1 btn-xl form-control"  style="color: white;">Horas Manual</button></div>
+                </div>
+
+                <!-- ############################################################## -->
+
+                <form method="POST" action="{{ url_for('tracking', page='create_time', id=id , p=p) }}" class="content_section">
+                    <div class="form-row">
+                        {{ task_track_form.csrf_token() }}
+                        <div class="form-group col-md-4">
+                            {{ wtf.form_field(task_track_form.hours , class="form-control" , placeholder='Cantidad de horas' ) }}
+                        </div>
+                        <div class="form-group col-md-2">
+                            {{ wtf.form_field(task_track_form.submit , class="btn btn-primary_1 btn-xl form-control" , style="color: white;" ) }}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Horas</th>
+                                    <th scope="col">eliminar</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for tt in task_track %}
+                                    <tr>
+                                        <td>{{tt.total_time}} Hora - {{ tt.create_date}} </td>
+                                        <td><a class="dropdown-item" href="{{ url_for('tracking', page='delete_time', id=tt.id_time , p=p) }}" >X</a></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+
+            {% for message in get_flashed_messages() %}
+                <div class="alert-error">{{ message }}</div>
+            {% endfor %}  
+
+            <!-- ############################################################## -->
+        </div>
+    </div>
+</div>
+   
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+        function toggle_display()
+        {
+            el = document.querySelector('.content_section');
+            
+            if(el.style.visibility == 'hidden')
+                {
+                    el.style.visibility = 'visible'
+                }
+            else
+                {   
+                    el.style.visibility = 'hidden'
+                }
+        }
+        
+var h1 = document.getElementsByTagName('h1')[0],
+start = document.getElementById('start'),
+stop = document.getElementById('stop'),
+clear = document.getElementById('clear'),
+start_date = document.getElementById('hours_start'),
+end_date = document.getElementById('hours_end'),
+seconds = 0, minutes = 0, hours = 0,
+t;
+
+
+var today = new Date();
+var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+var dateTime = date+' '+time;
+
+
+
+function add() {
+    seconds++;
+    if (seconds >= 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes >= 60) {
+            minutes = 0;
+            hours++;
+        }
+    }
+    
+    h1.textContent = (hours ? (hours > 9 ? hours : "0" + hours) : "00") + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
+    timer();
+}
+
+function timer() {
+    t = setTimeout(add, 1000);
+    start_date.value = dateTime;
+}
+
+/* timer();*/
+
+
+/* Start button */
+start.onclick = timer;
+
+/* Stop button */
+stop.onclick = function() {
+    clearTimeout(t);
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date+' '+time;
+    end_date.value = dateTime;
+}
+
+/* Clear button */
+clear.onclick = function() {
+    h1.textContent = "00:00:00";
+    seconds = 0; minutes = 0; hours = 0;
+    start_date.value = ' ';
+    end_date.value = ' ';
+}
+</script>
+{% endblock %}

@@ -1,0 +1,114 @@
+<html>
+    <head>
+        {%block head%}
+            <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/app-style.css') }}">
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/custom-responsive-styles.css') }}">
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+            <style>
+                /* Stackoverflow preview fix, please ignore */
+                .dropdown-toggle::after {
+                  display: none;
+                }
+      
+                .navbar-dark .navbar-nav .nav-link {
+                  color: #fff;
+                }
+      
+                .navbar{
+                  background-color: #662483;
+                }
+      
+                .navbar-nav {
+                  flex-direction: row;
+                }
+                
+                .nav-link {
+                  padding-right: .5rem !important;
+                  padding-left: .5rem !important;
+                }
+                
+                /* Fixes dropdown menus placed on the right side */
+                .ml-auto .dropdown-menu {
+                  left: auto !important;
+                  right: 0px;
+                }
+              </style>
+        {% endblock %}
+    </head>
+    <body>
+        {%block nav%}
+            <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+                <ul class="navbar-nav ml-auto">
+                {% block info_contact%}
+                <li class="nav-item">
+                  <a class="nav-link" href="{{url_for('proyect', page='index' , id=0)}}">Mis Proyectos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('task' , page = 'view_all_tasks' , id = 0)}}">Mis Tareas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('report')}}">Reportes</a>
+                </li>
+                {% block notification%}
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{url_for('notification')}}">Notificaciones</a>
+                  </li>
+                {% endblock %}
+                {% endblock %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                      <i class="fa fa-bars" style="padding-top: 5px;"></i>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <a class="dropdown-item" href="{{url_for('configuration' , action='none', email='none')}}">{{ session['email_address'] }}</a>
+                      <a class="dropdown-item" href="{{url_for('dashboard' , action='none')}}">Volver a Dashboard</a>
+                      {% block menu%}
+
+                      {% endblock %}
+                      <a class="dropdown-item" href="{{url_for('index')}}">Salir</a>
+                    </div>
+                </li>
+                </ul>
+            </nav>
+        {% endblock %}
+        {% block options %}
+        
+        {% endblock %}
+
+        <section id="About" class="content-section" style="padding-top: 100px;">
+          {% block content %}
+          {% endblock %}
+        </section>
+        
+        <footer class="footer text-center">
+          <div class="container">
+            <ul class="list-inline">
+              <li class="list-inline-item">
+                <a class="social-link rounded-circle text-white mr-3" href="https://www.instagram.com/otropunt.o/">
+                    <i class="fa fa-instagram" aria-hidden="true"></i>
+                  </a>
+              </li>
+              <li class="list-inline-item">
+                <a class="social-link rounded-circle text-white" href="javascript:void(0)">
+                    <i class="fa fa-facebook" aria-hidden="true"></i>
+                  </a>
+              </li>
+            </ul>
+            <p class="text-muted small mb-0">Copyright ©OtroPunto <script>document.write(new Date().getFullYear())</script></p>
+            <p class="text-muted small mb-0">Designed by <a href="https://www.position2.com/" target="_balnk">Position2</a></p>
+            <p class="text-muted small mb-0">Developed by <a href="https://cordobam.github.io/cv/" target="_balnk">Mariano Cordoba</a></p>
+          </div>
+        </footer>
+
+        {% block scripts %}
+            <script rel="text/javascript"  src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script rel="text/javascript" src="{{ url_for('static', filename='scripts/all-plugins.js')}}"></script>
+            <script rel="text/javascript"  src="{{ url_for('static', filename='scripts/plugins-activate.js')}}"></script>
+            <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+        {% endblock %}
+    </body>
+</html>

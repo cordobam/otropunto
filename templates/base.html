@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% block head %}
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+            <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/app-style.css') }}">
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/custom-responsive-styles.css') }}">
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+            <style>
+              /* Stackoverflow preview fix, please ignore */
+              .dropdown-toggle::after {
+                display: none;
+              }
+    
+              .navbar-dark .navbar-nav .nav-link {
+                color: #fff;
+              }
+    
+              .navbar{
+                background-color: #662483;
+              }
+    
+              .navbar-nav {
+                flex-direction: row;
+              }
+              
+              .nav-link {
+                padding-right: .5rem !important;
+                padding-left: .5rem !important;
+              }
+              
+              /* Fixes dropdown menus placed on the right side */
+              .ml-auto .dropdown-menu {
+                left: auto !important;
+                right: 0px;
+              }
+            </style>
+        {% endblock %}
+
+    </head>
+    <body id="page-top">
+        {% block imagen%}
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+          <ul class="navbar-nav ml-auto">
+            {% block info_contact%}
+            <li class="nav-item">
+              <a class="nav-link" href="https://api.whatsapp.com/send?phone=5493884761851&text=Hola!%20Quiero%20generar%20mas%20ventas!"><img src="../static/images/whatsapp.png"style="width: 20px; height: 20px; margin-bottom: 3px; margin-right: 2px;">+54 3884761851</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="mailto:otropunto.creative@gmail.com"><img src="../static/images/email.png" style="width: 25px; height: 25px; margin-bottom: 4px; margin-right: 2px;">otropunto.creative@gmail.com</a>
+            </li>
+            {% endblock %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% block menu%}
+                <a class="dropdown-item" href="#page-top">Home</a>
+                <a class="dropdown-item" href="#About">Sobre Nosotros</a>
+                <a class="dropdown-item" href="#Services">Servicios</a>
+                <a class="dropdown-item" href="#Testimonials">Testimonios</a>
+                <a class="dropdown-item" href="#Contact">Contacto</a>
+                <a class="dropdown-item" href="{{url_for('login')}}">Login</a>
+                {% endblock %}
+              </div>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Header Starts -->
+        <section id="Banner" class="content-section">
+          <div class="container content-wrap text-center">
+            {% block principal %}
+            <img class="img_logo" src="../static/images/DESIGN1-removebg-preview.png"   />
+              <h3>
+                <em>Comunicación. Diseño. Estrategias y algo más.</em>
+              </h3>
+            <a class="btn btn-primary btn-xl smooth-scroll" href="#About">Encontra más</a>
+          </div>
+          {% endblock %}
+          <div class="overlay"></div>
+        </section>
+        {% endblock %}
+        {% block content %}
+        <!-- Header Ends -->
+        <!-- About Us Starts -->
+        <section id="About" class="content-section">
+          <div class="container text-center">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="block-heading">
+                  <h2>Sobre Nosotros</h2>
+                </div>
+                <p class="lead">Somos un equipo interdisciplinario de comunicación y diseño gráfico y creemos en el 
+                  valor de construir un camino lleno de creatividad y compromiso. 
+                  En cada trabajo contamos con nuestros clientes tanto como ellos con nosotras.
+                  </p>
+                <img  src="../static/images/fpresantacion-17.png" class="img-presentation"/>
+                <img  src="../static/images/fpresantacion-16.png" class="img-presentation"/>   
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- About Us Starts -->
+        <section id="Services" class="content-section text-center">
+          <div class="container">
+            <div class="block-heading">
+              <h2>Servicios</h2>
+              <p class="lead">Podemos contarte que estamos trabajando con proyectos y emprendedores de esta forma:</p>
+            </div>
+            <div class="row">
+              <div class="col-md-4 col-sm-6">
+                <div class="service-box">
+                  <div class="service-icon yellow">
+                    <div class="front-content">
+                      <i class="fa fa-rocket" aria-hidden="true"></i>
+                      <h3>Branding y diseño para marcas</h3>
+                    </div>
+                  </div>
+                  <div class="service-content">
+                    <p>Creación de logos, marca, valores. Branding y rediseño de imagen.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="service-box">
+                  <div class="service-icon orange">
+                    <div class="front-content">
+                      <i class="fa fa-instagram"></i>
+                      <h3>Community management y estrategia digital</h3>
+                    </div>
+                  </div>
+                  <div class="service-content">
+                    <p>Análisis de situación actual, estrategias digitales, contenidos creativos, organización y planificación de redes sociales. Publicidad en redes y estrategias de posicionamiento.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="service-box ">
+                  <div class="service-icon red">
+                    <div class="front-content">
+                      <i class="fa fa-group" aria-hidden="true"></i>
+                      <h3>Cursos y talleres para emprendedores</h3>
+                    </div>
+                  </div>
+                  <div class="service-content">
+                    <p>Asesoramiento. Talleres y cursos online y presenciales para necesidades adaptadas.</p>
+                  </div>
+                </div>
+              </div>
+              <!--   <div class="col-md-3 col-sm-6">
+              <div class="service-box">
+                  <div class="service-icon grey">
+                    <div class="front-content">
+                      <i class="fa fa-users"></i>
+                      <h3>Talleres y Capacitacion</h3>
+                    </div>
+                  </div>
+                  <div class="service-content">
+                    <h3>Talleres</h3>
+                    <p>Talleres para empresas sobre estrategias y gestión de social media.. Modalidad virtual y presencial.</p>
+                    <p>Talleres de creatividad para emprendedores, Pymes, empresarios y equipos de comunicación. Modalidad virtual y presencial.</p>
+                  </div>
+                </div>
+              </div>-->
+            </div>
+          </div>
+        </section>
+        <!--<section class="content-section text-center" id="Portfolio">
+          <div class="container">
+            <div class="block-heading">
+              <h2>Portfolio</h2>
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+            </div>
+            <div class="portfolio-wrapper clearfix">
+              <a class="each-portfolio" data-fancybox="gallery" href="{{ url_for('static', filename='images/p-two.jpeg') }}">
+                <div class="content hover-cont-wrap">
+                  <div class="content-overlay"></div>
+                  <img class="content-image" src="{{ url_for('static', filename='images/p-two.jpeg') }}">
+                  <div class="content-details fadeIn-bottom">
+                    <h5 class="p-title">Title</h5>
+                    <p class="p-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                    <span class="zoom"><i class="fa fa-search-plus"></i></span>
+                  </div>
+                </div>
+              </a>
+              <a class="each-portfolio" data-fancybox="gallery" href="{{ url_for('static', filename='images/p-three.jpeg') }}">
+                <div class="content hover-cont-wrap">
+                  <div class="content-overlay"></div>
+                  <img class="content-image" src="{{ url_for('static', filename='images/p-three.jpeg') }}">
+                  <div class="content-details fadeIn-bottom">
+                    <h5 class="p-title">Title</h5>
+                    <p class="p-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                    <span class="zoom"><i class="fa fa-search-plus"></i></span>
+                  </div>
+                </div>
+              </a>
+              <a class="each-portfolio" data-fancybox="gallery" href="{{ url_for('static', filename='images/p-four.jpeg') }}">
+                <div class="content hover-cont-wrap">
+                  <div class="content-overlay"></div>
+                  <img class="content-image" src="{{ url_for('static', filename='images/p-four.jpeg') }}">
+                  <div class="content-details fadeIn-bottom">
+                    <h5 class="p-title">Title</h5>
+                    <p class="p-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                    <span class="zoom"><i class="fa fa-search-plus"></i></span>
+                  </div>
+                </div>
+              </a>
+              <a class="each-portfolio" data-fancybox="gallery" href="{{ url_for('static', filename='images/p-five.jpeg') }}">
+                <div class="content hover-cont-wrap">
+                  <div class="content-overlay"></div>
+                  <img class="content-image" src="{{ url_for('static', filename='images/p-five.jpeg') }}">
+                  <div class="content-details fadeIn-bottom">
+                    <h5 class="p-title">Title</h5>
+                    <p class="p-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                    <span class="zoom"><i class="fa fa-search-plus"></i></span>
+                  </div>
+                </div>
+              </a>
+              <a class="each-portfolio" data-fancybox="gallery" href="{{ url_for('static', filename='images/p-six.jpeg') }}">
+                <div class="content hover-cont-wrap">
+                  <div class="content-overlay"></div>
+                  <img class="content-image" src="{{ url_for('static', filename='images/p-six.jpeg') }}">
+                  <div class="content-details fadeIn-bottom">
+                    <h5 class="p-title">Title</h5>
+                    <p class="p-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                    <span class="zoom"><i class="fa fa-search-plus"></i></span>
+                  </div>
+                </div>
+              </a>
+              <a class="each-portfolio" data-fancybox="gallery" href="{{ url_for('static', filename='images/p-three.jpeg') }}">
+                <div class="content hover-cont-wrap">
+                  <div class="content-overlay"></div>
+                  <img class="content-image" src="{{ url_for('static', filename='images/p-three.jpeg') }}">
+                  <div class="content-details fadeIn-bottom">
+                    <h5 class="p-title">Title</h5>
+                    <p class="p-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                    <span class="zoom"><i class="fa fa-search-plus"></i></span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </section>-->
+        <!-- TESTIMONIALS -->
+        <section id="Testimonials" class="content-section">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="block-heading">
+                  <h2>Testimonios</h2>
+                  <p>Nuestros clientes </p>
+                </div>
+                <div id="customers-testimonials" class="owl-carousel">
+                  <div class="item">
+                    <div class="shadow-effect">
+                      <img class="img-circle" src="{{ url_for('static', filename='images/sarah.jpg') }}" alt="">
+                      <p>Mi experiencia fue muy satisfactoria. Son un equipo que ha estado en cada detalle de nuestro
+                        proyecto y nos supieron organizar y generar una nueva identidad que responde a lo que
+                        estamos buscando.
+                        Poseen conocimientos estratégicos de marketing y diseño y estamos muy satisfechos por
+                        haber confiado en ellas.</p>
+                    </div>
+                    <div class="testimonial-name">Juan Gonez. Grupo Escape</div>
+                  </div>
+                  <div class="item">
+                    <div class="shadow-effect">
+                      <img class="img-circle" src="{{ url_for('static', filename='images/tangelia.jpg') }}" alt="">
+                      <p>Fueron excelentes desde el principio. Ordenaron cuestiones importantísimas para poder
+                        transmitir al público lo que sucede dentro del taller y se supieron amoldar a mis conocimientos
+                        para darme estrategias y herramientas.
+                        
+                        Quedé muy contenta con el rediseño del logo y la paleta de colores que eligieron.
+                        </p>
+                    </div>
+                    <div class="testimonial-name">Anahi Guidoni. Taller de arte</div>
+                  </div>
+                  <div class="item">
+                    <div class="shadow-effect">
+                      <img class="img-circle" src="{{ url_for('static', filename='images/john-doe.jpg') }}" alt="">
+                      <p>Para un negocio familiar de tantos años es difícil este tipo de cambio, pero importante, otro
+                        punto no solo hizo las cosas más fáciles y efectivas. Lograron que nos identificáramos con una
+                        nueva identidad proveniente desde nuestros años de recorrido.
+                        Agradecido por tanta entrega.
+                        </p>
+                    </div>
+                    <div class="testimonial-name">Alexis Viñabal. Casa Josy.</div>
+                  </div>
+                  <!--<div class="item">
+                    <div class="shadow-effect">
+                      <img class="img-circle" src="{{ url_for('static', filename='images/amy.jpg') }}" alt="">
+                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                    </div>
+                    <div class="testimonial-name">Amy Tan</div>
+                  </div>
+                  <div class="item">
+                    <div class="shadow-effect">
+                      <img class="img-circle" src="{{ url_for('static', filename='images/daniel.jpg') }}" alt="">
+                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                    </div>
+                    <div class="testimonial-name">Daniel Felsted</div>
+                  </div>-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- END OF TESTIMONIALS -->
+        <section id="Contact" class="content-section">
+          <div class="container">
+            <div class="block-heading">
+              <h2>Contacto</h2>
+              <p class="lead">¿Qué es lo que querés realizar?
+                ¿Qué es lo que querés realizar? Lo más importante es conocer tus necesidades para crear tu plan personalizado. ¡Construyamos juntos!
+                </p>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 col-md-6 col-lg-6">
+                <div class="contact-wrapper">
+                  <div class="address-block border-bottom">
+                    <h3 class="add-title">Argentina</h3>
+                    <div class="c-detail">
+                      <span class="c-icon"><i class="fa fa-map-marker" aria-hidden="true"></i></span><span class="c-info">Argentina</span>
+                    </div>
+                    <div class="c-detail">
+                      <span class="c-icon"><i class="fa fa-phone" aria-hidden="true"></i></span><span class="c-info">+54 3884761851 - +54 3888538224</span>
+                    </div>
+                    <div class="c-detail">
+                      <span class="c-icon"><i class="fa fa-envelope" aria-hidden="true"></i></span><span class="c-info">otropunto.creative@gmail.com</span>
+                    </div>
+                  </div>
+                  <div class="address-block">
+                    <h3 class="add-title"></h3>
+                    <div class="c-detail">
+                      <span class=""><i class="" aria-hidden="true"></i></span><span class="c-info"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-6">
+                <div class="form-wrap">
+                  {% block contact %}
+
+                  {% endblock %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        {% endblock%}
+        {% block footer %}
+        <footer class="footer text-center">
+          <div class="container">
+            <ul class="list-inline">
+              <li class="list-inline-item">
+                <a class="social-link rounded-circle text-white mr-3" href="https://www.instagram.com/otropunt.o/">
+                    <i class="fa fa-instagram" aria-hidden="true"></i>
+                  </a>
+              </li>
+              <li class="list-inline-item">
+                <a class="social-link rounded-circle text-white" href="javascript:void(0)">
+                    <i class="fa fa-facebook" aria-hidden="true"></i>
+                  </a>
+              </li>
+            </ul>
+            <p class="text-muted small mb-0">Copyright ©OtroPunto <script>document.write(new Date().getFullYear())</script></p>
+            <p class="text-muted small mb-0">Designed by <a href="https://www.position2.com/" target="_balnk">Position2</a></p>
+            <p class="text-muted small mb-0">Developed by <a href="https://cordobam.github.io/cv/" target="_balnk">Mariano Cordoba</a></p>
+          </div>
+          <script rel="text/javascript"  src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+          <script rel="text/javascript" src="{{ url_for('static', filename='scripts/all-plugins.js')}}"></script>
+          <script rel="text/javascript"  src="{{ url_for('static', filename='scripts/plugins-activate.js')}}"></script>
+          <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+          <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+          <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+        </footer>
+        {% endblock%}
+      </body>  
+</html>

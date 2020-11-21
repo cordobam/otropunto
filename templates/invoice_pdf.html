@@ -1,0 +1,158 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="col-sm-12 col-12 padding">
+                        <div class="card">
+                            <div class="card-header p-4">
+                                <a class="pt-2 d-inline-block" href="index.html" data-abc="true">otropunto.com</a>
+                                <div class="float-right">
+                                    {% if  invoice %}
+                                    <h3 class="mb-0">Factura #{{invoice.id_invoice}}</h3>
+                                    Fecha: {{invoice.create_date}}
+                                    {% else %}
+                                        <h3 class="mb-0">Factura #1</h3>
+                                        Fecha: {{proyect.create_date}}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-4">
+                                    <div class="col-sm-4" style="padding: 10px;">
+                                        <h5 class="mb-3">De:</h5>
+                                        <h5 class="text-dark mb-1">Otropunto</h5>
+                                        <div>Argentina</div>
+                                        <div>Email: otropunto.creative@gmail.com</div>
+                                        <div>Cel: +54 3884761851 - +54 3888538224</div>
+                                    </div>
+                                    <div class="col-sm-4" style="padding: 10px;">
+                                        <h5 class="mb-3">Para:</h5>
+                                        <h5 class="text-dark mb-1">{{proyect._proyect_client.company_name}}</h5>
+                                        <div>Email: {{proyect._proyect_client.email_address}}</div>
+                                    </div>
+                                    <div class="col-sm-4" style="padding: 10px;">
+                                        <h5 class="mb-3">Descripcion:</h5>
+                                        <h5 class="text-dark mb-1">Facturacion para el proyecto: </h5>
+                                        <div>{{proyect.proyect_name}} </div>
+                                    </div>
+                                </div>
+                                <div class="table-responsive-sm">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="center">#</th>
+                                                <th>Item</th>
+                                                <th>Descripcion</th>
+                                                <th class="right">Precio</th>
+                                                <th class="center">Ctd</th>
+                                                <th class="right">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                {% if proyect_costs.description == 'Facturacion por hora'%}
+                                                    {% if proyect_tasks %}
+                                                            {% for pt in proyect_tasks %}
+                                                            <tr>
+                                                                {% if pt.id_type_task == 1 %}
+                                                                    <td class="center">1</td>
+                                                                    <td class="left strong">Desarrollo</td>
+                                                                    <td class="left">{{proyect_costs.description}}</td>
+                                                                    <td class="right">${{costs_dev.price}}</td> <!--precio unitario-->
+                                                                    <td class="center">{{ pt.total_time }}</td> 
+                                                                    <td class="right">${{  total }}</td>
+                                                                {% elif pt.id_type_task ==2 %}
+                                                                    <td class="center">1</td>
+                                                                    <td class="left strong">Diseño</td>
+                                                                    <td class="left">{{proyect_costs.description}}</td>
+                                                                    <td class="right">${{costs_d.price}}</td>
+                                                                    <td class="center">{{ pt.total_time }}</td>
+                                                                    <td class="right">${{  total_d }}</td>
+                                                                {% elif pt.id_type_task ==3 %}
+                                                                    <td class="center">1</td>
+                                                                    <td class="left strong">QA</td>
+                                                                    <td class="left">{{proyect_costs.description}}</td>
+                                                                    <td class="right">${{costs_t.price}}</td>
+                                                                    <td class="center">{{ pt.total_time }}</td>
+                                                                    <td class="right">${{  total_qa }}</td>
+                                                                {% elif pt.id_type_task == 4 %}
+                                                                    <td class="center">1</td>
+                                                                    <td class="left strong">Proyect Managment</td>
+                                                                    <td class="left">{{proyect_costs.description}}</td>
+                                                                    <td class="right">${{costs_pm.price}}</td>
+                                                                    <td class="center">{{ pt.total_time }}</td>
+                                                                    <td class="right">${{  total_pm}}</td>
+                                                                {% elif pt.id_type_task == 5 %}
+                                                                    <td class="center">1</td>
+                                                                    <td class="left strong">Analisis</td>
+                                                                    <td class="left">{{proyect_costs.description}}</td>
+                                                                    <td class="right">${{costs_a.price}}</td>
+                                                                    <td class="center">{{ pt.total_time }}</td>
+                                                                    <td class="right">${{ total_a }}</td>
+                                                                {% else %}
+                                                                
+                                                                {% endif %}
+                                                            </tr>
+                                                            {% endfor %}
+                                                    {% endif %}
+                                                {% elif proyect_costs.description == 'Facturacion por plan'%}
+                                                    <tr>
+                                                        <td class="center">1</td>
+                                                        <td class="left strong">{{ costs.description}}</td>
+                                                        <td class="left">{{ costs.description}}</td>
+                                                        <td class="right">${{ costs.price}}</td>
+                                                        <td class="center">1</td>
+                                                        <td class="right">${{ costs.price}}</td>
+                                                    </tr>
+                                                {% else %}
+                                                    <tr>
+                                                        <td class="center">1</td>
+                                                        <td class="left strong">Sin facturacion</td>
+                                                        <td class="left">Sin facturacion</td>
+                                                        <td class="right">$0</td>
+                                                        <td class="center">1</td>
+                                                        <td class="right">$0</td>
+                                                    </tr>
+                                                {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4 col-sm-5">
+                                    </div>
+                                    <div class="col-lg-4 col-sm-5 ml-auto">
+                                        <table class="table table-clear">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="right">
+                                                        <strong class="text-dark">Total</strong>
+                                                        {% if proyect_costs.description == 'Facturacion por horas'%}
+                                                            <strong class="text-dark">${{ total_final }}</strong> 
+                                                        {% elif proyect_costs.description == 'Facturacion por plan'%}
+                                                            <strong class="text-dark">${{ costs.price}}</strong>
+                                                        {% else %}
+                                                            <strong class="text-dark">$0</strong>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white">
+                                <p class="mb-0">otropunto.com, Argentina.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- Termina la factura -->
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>    
+    </body>
+</html>
