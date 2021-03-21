@@ -130,6 +130,11 @@ class ConfigForm(FlaskForm):
 ## reports 
 
 class UserSelectForm(FlaskForm):
-    user = SelectField()
+    user = SelectField(validators=[DataRequired()])
+    submit = SubmitField('Ver')
+
+class DateSelectForm(FlaskForm):
+    between_1 = DateField(validators=[DataRequired()])
+    between_2 = DateField(validators=[DataRequired()])
     submit = SubmitField('Ver')
 

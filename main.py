@@ -1,8 +1,8 @@
 from flask import Flask , render_template  , redirect , url_for , flash , request , session , make_response
 from flask_sqlalchemy import SQLAlchemy 
-from models import Country , CountryState , UserRole , User , Proyects , ProyectType , ProyectUsers , Tasks , Status , TaskUser , ProyectStatus , ProyectUsers , Comments , AssetsMaterials , TaskAssets , TaskTracking , TypeTasks , TaskAdvance , ProyectAdvance , Advances, TypeCosts, ProyectCosts , Costs , Invoices , InvoicesDetails , Notifications
+from models import  Country , CountryState , UserRole , User , Proyects , ProyectType , ProyectUsers , Tasks , Status , TaskUser , ProyectStatus , ProyectUsers , Comments , AssetsMaterials , TaskAssets , TaskTracking , TypeTasks , TaskAdvance , ProyectAdvance , Advances, TypeCosts, ProyectCosts , Costs , Invoices , InvoicesDetails , Notifications
 from flask_bootstrap import Bootstrap
-from forms import LoginForm , ContactForm , SignUpForm , UserCreateForm , UserUpdateForm , DeleteForm , PasswordForm , SearchForm , ProyectTypeForm , ProyectForm , UsersProyectsForm , TaskForm , TaskFormUser  , CommentForm , AssetForm ,TaskTrackForm , TaskHourForm , ConfigForm, UserSelectForm
+from forms import LoginForm , ContactForm , SignUpForm , UserCreateForm , UserUpdateForm , DeleteForm , PasswordForm , SearchForm , ProyectTypeForm , ProyectForm , UsersProyectsForm , TaskForm , TaskFormUser  , CommentForm , AssetForm ,TaskTrackForm , TaskHourForm , ConfigForm, UserSelectForm , DateSelectForm
 from config import Config
 from flask_mail import Message , Mail
 import re
@@ -10,6 +10,7 @@ from datetime import datetime , date
 from dateutil.relativedelta import relativedelta
 import sys
 import pdfkit
+
 
 
 from sqlalchemy import create_engine
@@ -127,7 +128,7 @@ def password(email):
 
             user_email = User.get_for_email(password_form.username.data)  
 
-            if user_email.email_address != None:
+            if user_email:
                 msg = Message('Cambio de contraseña OtroPunto', sender='cordobam1987@gmail.com', recipients = ['cordobam1987@gmail.com'])
                 msg.html ='<!DOCTYPE html> <html><head><meta charset="utf-8"></head><body><p>Email: {}  </p><p><a class="dropdown-item" href="http://127.0.0.1:5000/password/{}">Cambiar Contraseña</a></p></body></html>'.format(mail_modf, mail_modf)
                 mail.send(msg)
@@ -206,12 +207,12 @@ def dashboard(action):
         "#DDDDDD", "#ABCABC", "#4169E1"
     ]
 
-    flag_read = False
+    flag_read = True
     for  n  in notifications.items:
         if n.read == False:
             flag_read = False
-        else:
-            flag_read = True
+        #else:
+        #    flag_read = True
 
     context = {
         'u':u,
@@ -233,12 +234,12 @@ def configuration(action, email):
     u = session['id_user']
     notifications = Notifications.get_by_user_id(u)
 
-    flag_read = False
+    flag_read = True
     for  n  in notifications.items:
         if n.read == False:
             flag_read = False
-        else:
-            flag_read = True
+        #else:
+        #    flag_read = True
     ## PAGE
     action = action
     email = email
@@ -343,12 +344,12 @@ def proyect(page, id):
     u = session['id_user']
     notifications = Notifications.get_by_user_id(u)
 
-    flag_read = False
+    flag_read = True
     for  n  in notifications.items:
         if n.read == False:
             flag_read = False
-        else:
-            flag_read = True
+        #else:
+        #    flag_read = True
     
     page = page
     id = id 
@@ -366,6 +367,7 @@ def proyect(page, id):
         search_form = SearchForm()
         page_ = int(request.args.get('pages', 1))
         proyect_data = Proyects.get_by_name(search_form.name_to_search.data)
+        print(search_form.name_to_search.data)
         proyect_user = ProyectUsers.get_user_proyect_paginated_id(page_ , 3 ,session['id_user'] , proyect_status)
         proyect_update = None
 
@@ -440,7 +442,8 @@ def proyect(page, id):
             'final_days':final_days,
             'proyect_users':proyect_users,
             'notifications':notifications,
-            'flag_read':flag_read
+            'flag_read':flag_read,
+            'action': action
         }
         return render_template('proyect_details.html', **context_view_index)
 
@@ -941,12 +944,12 @@ def task(page , id ):
     u = session['id_user']
     notifications = Notifications.get_by_user_id(u)
 
-    flag_read = False
+    flag_read = True
     for  n  in notifications.items:
         if n.read == False:
             flag_read = False
-        else:
-            flag_read = True
+        #else:
+        #    flag_read = True
 
     id = id 
     page = page 
@@ -984,6 +987,7 @@ def task(page , id ):
         assets = TaskAssets.get_by_task(task.id_task)
         comments = Comments.get_by_task_id(task.id_task)
         task_users = TaskUser.get_by_task_id(task.id_task)
+        p = task.id_proyect
     else:
         comments = None
         assets = None
@@ -1417,12 +1421,12 @@ def board():
     u = session['id_user']
     notifications = Notifications.get_by_user_id(u)
 
-    flag_read = False
+    flag_read = True
     for  n  in notifications.items:
         if n.read == False:
             flag_read = False
-        else:
-            flag_read = True
+        #else:
+        #    flag_read = True
 
     id = request.args.get('id')
     task_proyect = Tasks.get_by_proyect_board(request.args.get('id') , 1, 2,3 , 4)
@@ -1443,12 +1447,12 @@ def tracking():
     u = session['id_user']
     notifications = Notifications.get_by_user_id(u)
 
-    flag_read = False
+    flag_read = True
     for  n  in notifications.items:
         if n.read == False:
             flag_read = False
-        else:
-            flag_read = True
+        #else:
+        #    flag_read = True
 
     id = request.args.get('id')
     p = request.args.get('p')
@@ -1546,12 +1550,12 @@ def advance():
     u = session['id_user']
     notifications = Notifications.get_by_user_id(u)
 
-    flag_read = False
+    flag_read = True
     for  n  in notifications.items:
         if n.read == False:
             flag_read = False
-        else:
-            flag_read = True
+        #else:
+        #    flag_read = True
 
     p = int(request.args.get('p'))
 
@@ -1589,12 +1593,12 @@ def invoice():
     u = session['id_user']
     notifications = Notifications.get_by_user_id(u)
 
-    flag_read = False
+    flag_read = True
     for  n  in notifications.items:
         if n.read == False:
             flag_read = False
-        else:
-            flag_read = True
+        #else:
+        #    flag_read = True
  
     p = request.args.get('p')
     proyect_costs = ProyectCosts.get_by_proyect_id(p)
@@ -1715,9 +1719,18 @@ def invoice():
         'total_final':total_final,
         'page': page,
         'invoices':invoices,
-        'flag_read':flag_read
+        'flag_read':flag_read,
+        'p':p
     }
-    
+
+    # if page == 'facturacion':
+    #     invoices = Invoices.get_all_proyect_close()
+    #     context = {
+    #         'page':page,
+    #         'invoices':invoices,
+    #         'flag_read':flag_read,
+    #         'notifications':notifications
+    #     }
 
     if page == 'download':
         path_wkthmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
@@ -1735,7 +1748,7 @@ def invoice():
         try:
             flag_invoice_detail = InvoicesDetails.get_by_invoice_id(invoice.id_invoice)
             if flag_invoice_detail:
-                flash('La facturacion ya se encuentra cerrada')
+                flash('La facturacion ya se encuentra cerrada, descargue la factura')
                 return redirect(url_for('invoice' , p=proyect.id_proyect , page='invoice'))     
             else:
                 if proyect_tasks:
@@ -1785,7 +1798,8 @@ def invoice():
                             )
                             db.session.add(i)
                             db.session.commit()
-                    return redirect(url_for('invoice' , page = 'facturation',  p=proyect.id_proyect ))
+                    flash('La facturacion del proyecto fue cerrada, descargue su factura', 'error')
+                    return redirect(url_for('invoice' , p=proyect.id_proyect , page='invoice'))  
                 else:
                     if proyect_costs.description == 'Facturacion por plan':
                         i = InvoicesDetails(
@@ -1795,8 +1809,9 @@ def invoice():
                                 id_proyect_costs = proyect_costs.id_proyect_costs
                             )
                         db.session.add(i)
-                        db.session.commit() 
-                    return redirect(url_for('invoice' , page = 'facturation',  p=proyect.id_proyect ))
+                        db.session.commit()
+                    flash('La facturacion del proyecto fue cerrada, descargue su factura', 'error') 
+                    return redirect(url_for('invoice' , p=proyect.id_proyect , page='invoice'))  
         except Exception as e:
             return render_template('invoice.html' , **context)
 
@@ -1810,12 +1825,12 @@ def report():
     u = session['id_user']
     notifications = Notifications.get_by_user_id(u)
 
-    flag_read = False
+    flag_read = True
     for  n  in notifications.items:
         if n.read == False:
             flag_read = False
-        else:
-            flag_read = True
+        #else:
+        #    flag_read = True
 
     page = request.args.get('page')
 
@@ -1831,13 +1846,15 @@ def report():
         
     if page == 'facturation':
         facturation = InvoicesDetails.get_by_facturation()
+        date_form  = DateSelectForm() 
     else:
         facturation = []
+        date_form  = DateSelectForm() 
+
 
     if page == 'task_user':
         if request.method == 'POST':
             user_new = request.form.get('ddlUsers')
-            print(user_new)
             users = User.get_all()
             user_form = UserSelectForm() 
             tareas_x_status = TaskUser.get_by_count_status(user_new)
@@ -1862,8 +1879,20 @@ def report():
         'flag_read':flag_read,
         'tareas_x_status':tareas_x_status,
         'users':users,
-        'user_form':user_form
+        'user_form':user_form,
+        'date_form':date_form
     }
+
+
+    if request.method == 'POST' and page == 'facturation':
+        _start_date =  date_form.between_1.data
+        _end_date = date_form.between_2.data
+
+        #start = datetime.strptime( _start_date , '%Y-%m-%d')
+        #end = datetime.strptime( _end_date, '%Y-%m-%d')
+
+        facturation = InvoicesDetails.get_by_facturation_date(_start_date , _end_date)
+        date_form  = DateSelectForm()            
 
     if page == 'proyect_time': # Tiempo consumido para finalizar los proyectos por tipo de proyecto. [bar]
 
@@ -1967,12 +1996,14 @@ def notification():
 
     notifications = Notifications.get_by_user_id(u , pages , 10)
 
-    flag_read = False
+    flag_read = True
     for  n  in notifications.items:
         if n.read == False:
             flag_read = False
-        else:
-            flag_read = True
+        #else:
+        #    flag_read = True
+    
+    #print(flag_read)
 
     if page != 'update_configuracion' and request.method != 'POST':
         confi_form.check_proyect_notification.data = user.config_proyect

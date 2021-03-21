@@ -126,8 +126,8 @@
             <div class="d-flex justify-content-between">
                 <div class="p-2"><h3>Factura</h3></div>
                 <div class="p-2"><a class="dropdown-item" title="Descargar" class="form-control" href="{{ url_for('invoice' , page='download' , p=proyect.id_proyect) }}"><i class="fa fa-download" aria-hidden="true"></i></a></div>
-                <div class="p-2"><a class="dropdown-item"  title="Facturas anteriores" class="form-control" href="{{ url_for('invoice' , page='facturacion' , p=proyect.id_proyect) }}"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></a></div>
-                <div class="p-2"><a class="dropdown-item" href="{{url_for('proyect' , page = 'ver_index', id=proyect.id_proyect ,  p=proyect.id_proyect , action='active')}}"><i class="fa fa-hand-o-left" aria-hidden="true"></i></a></div>  
+                <!-- <div class="p-2"><a class="dropdown-item"  title="Facturas anteriores" class="form-control" href="{{ url_for('invoice' , page='facturacion' , p=proyect.id_proyect) }}"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></a></div>
+                 --><div class="p-2"><a class="dropdown-item" href="{{url_for('proyect' , page = 'ver_index', id=proyect.id_proyect ,  p=proyect.id_proyect , action='active')}}"><i class="fa fa-hand-o-left" aria-hidden="true"></i></a></div>  
             </div>
             <hr style="padding-bottom: 5px;">
             <div class="col-sm-12 col-12 padding">
@@ -177,7 +177,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                        {% if proyect_costs.description == 'Facturacion por hora'%}
+                                        {% if proyect_costs.description == 'Facturacion por horas'%}
                                             {% if proyect_tasks %}
                                                     {% for pt in proyect_tasks %}
                                                     <tr>
@@ -254,7 +254,7 @@
                                             <td class="left">
                                                 <strong class="text-dark">Total</strong> </td>
                                             <td class="right">
-                                                {% if proyect_costs.description == 'Facturacion por hora'%}
+                                                {% if proyect_costs.description == 'Facturacion por horas'%}
                                                     <strong class="text-dark">${{ total_final }}</strong> 
                                                 {% elif proyect_costs.description == 'Facturacion por plan'%}
                                                     <strong class="text-dark">${{costs.price}}</strong>
@@ -272,7 +272,7 @@
                         <p class="mb-0">otropunto.com, Argentina.</p>
                     </div>
                 </div> <!-- Termina la tarjeta de la factura-->
-                {% elif page == 'facturation' %}
+                <!-- {% elif page == 'facturacion' %}
                     <ul class="list-group">
                         {% for i in invoices %}
                             <li class="list-group-item d-flex justify-content-between align-items-center"> Factura nro {{i.id_invoice}} | Creada el: {{ i.create_date }} 
@@ -280,14 +280,14 @@
                             </li>
                         {% endfor %} 
                     </ul>
-                {% endif %}
+                {% endif %} -->
             </div>
         </div> <!-- Termina la factura -->
     </div>
 </div> 
 
 {% if ps == '2' %}
-    {% if proyect_costs.description == 'Facturacion por hora' or proyect_costs.description == 'Facturacion por plan' %}
+    {% if proyect_costs.description == 'Facturacion por horas' or proyect_costs.description == 'Facturacion por plan' %}
         <div class="d-flex justify-content-center" >
             <div class="p-2"><a class="dropdown-item" style="color: black;" href="{{url_for('invoice' , page = 'close_facturation',  p=proyect.id_proyect )}}">Cerrar facturacion</a></div>  
         </div>

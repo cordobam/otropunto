@@ -169,7 +169,7 @@ class Proyects(db.Model):
     @staticmethod
     def get_by_name(name):
         return Proyects.query.filter_by(proyect_name = name).first()
-    
+            
     @staticmethod
     def get_all_by_user(id):
         return Proyects.query.filter_by(id_user = id).all()
@@ -219,7 +219,7 @@ class ProyectUsers(db.Model):
  
     @staticmethod
     def get_user_proyect_paginated( page  , per_page  ,  id ): 
-        return  ProyectUsers.query.filter_by(id_user = id).join(Proyects , Proyects.id_proyect == ProyectUsers.id_proyect ).filter_by(id_proyect_status = 1).paginate(page=page, per_page=per_page, error_out=False)
+        return  ProyectUsers.query.filter_by(id_user = id).join(User , User.id_user == ProyectUsers.id_user).join(Proyects , Proyects.id_proyect == ProyectUsers.id_proyect ).filter_by(id_proyect_status = 1).paginate(page=page, per_page=per_page, error_out=False)
  
     @staticmethod
     def get_by_count_status(id_user):
@@ -278,7 +278,7 @@ class ProyectAdvance(db.Model):
     
     @staticmethod
     def get_by_proyect_id(id_proyect):
-        return ProyectAdvance.query.filter_by(id_proyect = id_proyect).join(Advances , ProyectAdvance.id_advance == Advances.id_advance).join(User , User.id_user == ProyectAdvance.id_user).order_by(Advances.create_date.asc()).all()
+        return ProyectAdvance.query.filter_by(id_proyect = id_proyect).join(Advances , ProyectAdvance.id_advance == Advances.id_advance).join(User , User.id_user == ProyectAdvance.id_user).order_by(Advances.create_date.desc()).all()
     
 
 
@@ -308,7 +308,7 @@ class TaskAdvance(db.Model):
 
     @staticmethod
     def get_by_task_id(id_task):
-        return TaskAdvance.query.filter_by(id_task = id_task).join(Advances , Advances.id_advance == TaskAdvance.id_advance).join(User , User.id_user == TaskAdvance.id_user).order_by(Advances.create_date.asc()).all()
+        return TaskAdvance.query.filter_by(id_task = id_task).join(Advances , Advances.id_advance == TaskAdvance.id_advance).join(User , User.id_user == TaskAdvance.id_user).order_by(Advances.create_date.desc()).all()
 
 
 #### tipos de proyectos
@@ -749,6 +749,11 @@ class InvoicesDetails(db.Model):
     @staticmethod
     def get_by_facturation():
         return InvoicesDetails.query.with_entities(label( 'proyect_type' , ProyectType.description) , label( 'cantidad', func.sum(InvoicesDetails.total_hours * InvoicesDetails.total_price)) ).join(Invoices , Invoices.id_invoice == InvoicesDetails.id_invoice).join(Proyects , Proyects.id_proyect == Invoices.id_proyect).join(ProyectType , ProyectType.id_proyect_type == Proyects.id_proyect_type).group_by(ProyectType.description).all()
+
+    @staticmethod
+    def get_by_facturation_date(start_date , end_date):
+        return InvoicesDetails.query.with_entities(label( 'proyect_type' , ProyectType.description) , label( 'cantidad', func.sum(InvoicesDetails.total_hours * InvoicesDetails.total_price)) ).join(Invoices , Invoices.id_invoice == InvoicesDetails.id_invoice).filter(Invoices.create_date.between(start_date , end_date)).join(Proyects , Proyects.id_proyect == Invoices.id_proyect).join(ProyectType , ProyectType.id_proyect_type == Proyects.id_proyect_type).group_by(ProyectType.description).all()
+ 
  
     #label( 'cantidad', func.count(Proyects.id_proyect)) , label( 'proyect_type' , ProyectType.description)
 
@@ -782,6 +787,6 @@ class Notifications(db.Model):
     
     @staticmethod
     def get_by_user_id(id_user , page = 1 , per_page = 20):
-        response = Notifications.query.order_by(Notifications.create_date.asc()).filter_by(id_user = id_user).paginate(page=page, per_page=per_page, error_out=False)
+        response = Notifications.query.order_by(Notifications.create_date.desc()).filter_by(id_user = id_user).paginate(page=page, per_page=per_page, error_out=False)
         db.session.remove()
         return response

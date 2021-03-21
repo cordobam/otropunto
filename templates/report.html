@@ -12,6 +12,9 @@
         border-radius: 50%;
         display: inline-block;
         }
+        .control-label {
+            display: none;
+        }
     </style>
 {% endblock %}
 
@@ -141,7 +144,9 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-12">
-                        <canvas id="chart" width="600" height="400"></canvas>
+                        <div class="d-flex justify-content-center" style="padding: 20px;">
+                            <canvas id="chart" width="600" height="400"></canvas>
+                        </div>
                     </div>
                     <div class="form-group col-md-12" style="padding: 20px;">
                         <table class="table table-hover">
@@ -260,12 +265,28 @@
             <!-- ############################################################## -->
 
             {% elif page == 'facturation' %}
-            <div class="d-flex justify-content-center" style="padding: 20px;">
+            <div class="d-flex justify-content-between" style="padding: 20px;">
                 <h3>{{ title }}</h3>
+                <form method="POST" action="{{url_for('report' , page = 'facturation')}}">
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            {{ wtf.form_field(date_form.between_1 , class="form-control" , title="Desde") }}
+                        </div>
+                        <div class="form-group col-md-5">
+                            {{ wtf.form_field(date_form.between_2 , class="form-control" , title="Hasta" ) }}
+                        </div>
+                        <div class="form-group col-md-2">
+                            {{ wtf.form_field(date_form.submit , class="btn btn-primary_1 btn-xl" , style="color: white;" ) }}
+                        </div>
+                    </div>
+                </form>
             </div>
+
             <div class="form-row">
                 <div class="form-group col-md-12">
-                    <canvas id="chart" width="600" height="400"></canvas>
+                    <div class="d-flex justify-content-center" style="padding: 20px;">
+                        <canvas id="chart" width="600" height="400"></canvas>
+                    </div>
                 </div>
                 <div class="form-group col-md-12" style="padding: 20px;">
                     <table class="table table-hover">

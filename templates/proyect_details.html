@@ -164,7 +164,7 @@
                 {% if final_days != 0 %}
                     Dias para fin de proyecto: {{final_days}}
                 {% else %}
-                    Proyeto vencido el: {{proyect_data.end_date}}
+                    <div style="color: red;">Proyeto vencido el: {{proyect_data.end_date}}</div> 
                 {% endif %}
 
                 </div>
@@ -204,7 +204,19 @@
                 {% if not task_proyect or task_proyect == None %}
                     <div class="col-sm-12" style="padding-top: 30px;">
                         <div class="d-flex justify-content-center text-center">
-                            <div class="p-2"><a class="dropdown-item" href="{{ url_for('task' , page='create' , id=proyect_data.id_proyect , p = proyect_data.id_proyect ) }}">No existen tareas para el proyecto. Crear tareas?</a></div>
+                            {% if session['id_user_role'] != 2 %}
+                                {% if action != 'active' %}
+                                    <div class="p-2"><a class="dropdown-item" >No existen tareas archivadas o finalizadas</a></div>
+                                {% else %}
+                                    <div class="p-2"><a class="dropdown-item" href="{{ url_for('task' , page='create' , id=proyect_data.id_proyect , p = proyect_data.id_proyect ) }}">No existen tareas activas para el proyecto. Crear tareas?</a></div>
+                                {% endif %}
+                            {% else %}
+                                {% if action != 'active' %}
+                                    <div class="p-2"><a class="dropdown-item" >No existen tareas archivadas o finalizadas</a></div>
+                                {% else %}
+                                    <div class="p-2"><a class="dropdown-item">No existen tareas activas para el proyecto.</a></div>
+                                {% endif %}                               
+                            {% endif %}
                         </div>
                     </div>
                 {% endif %}

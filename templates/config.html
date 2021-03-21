@@ -368,6 +368,13 @@
                 {% endwith %}
             {% endif %}
         </div>
+            <!-- ############################################################## -->
+
+            <div class="d-flex justify-content-center text-center">
+                {% for message in get_flashed_messages() %}
+                    <div class="p-2">{{ message }}</div>
+                {% endfor  %}
+            </div>
     </div>
 </div>
 

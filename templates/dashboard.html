@@ -303,7 +303,7 @@
                             <div class="card-body">
                             <h5 class="card-title">{{ up._proyect.proyect_name}}</h5>
                             <p class="card-text">Creacion: {{ up._proyect.create_date}}</p>
-                            <p class="card-text">Usuario: {{ up.id_user}}</p>
+                            <p class="card-text">Usuario: {{ up._user.email_address}}</p>
                             <a class="btn btn-primary_1 btn-xl" style="color: white;" href="{{url_for('proyect' , page='ver_index' , id=up.id_proyect , action='active')}}">Ver proyecto</a>
                             </div>
                         </div>

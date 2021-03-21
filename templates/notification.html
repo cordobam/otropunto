@@ -41,7 +41,7 @@
                         {% if n.read%}
                             
                         {% else %}
-                            <a class="dropdown-item" href="">{{ n.description  }}</a>
+                            <a class="dropdown-item" href="">{{ n.description  }} | {{ n.create_date }}</a>
                         {% endif %}
                     {% endfor %}
                     {% if flag_read %}
@@ -86,7 +86,7 @@
                     {% if n.read%}
                         
                     {% else %}
-                        <a class="dropdown-item" href="">{{ n.description  }}</a>
+                        <a class="dropdown-item" href="">{{ n.description  }} | {{ n.create_date }}</a>
                     {% endif %}
                 {% endfor %}
                 {% if flag_read %}
@@ -137,7 +137,7 @@
                         {% if n.id_task %}
                             {% if user.config_task %}
                                 {% if n.read %}
-                                    <li class="list-group-item d-flex justify-content-between align-items-center"> {{n.description}}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center"> {{n.description}} | {{ n.create_date }}
                                         <span class="btn btn-primary_1 btn-xl" style="color: white;"><a href="{{ url_for('task' , page='view' , id=n.id_task) }}" style="color: white; padding: 10px;"> Ver tarea </a></span>
                                     </li>
                                 {% else %}
@@ -149,7 +149,7 @@
                         {% else %}
                             {% if user.config_proyect %}
                                 {% if n.read %}
-                                    <li class="list-group-item d-flex justify-content-between align-items-center"> {{n.description}}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center"> {{n.description}} | {{ n.create_date }}
                                         <span class="btn btn-primary_1 btn-xl" style="color: white;"><a href="{{ url_for('proyect' , page='ver_index' , id=n.id_proyect) }}" style="color: white; padding: 10px;"> Ver proyecto </a></span>
                                     </li>
                                 {% else %}

@@ -60,7 +60,7 @@
                 <a class="dropdown-item" href="#Services">Servicios</a>
                 <a class="dropdown-item" href="#Testimonials">Testimonios</a>
                 <a class="dropdown-item" href="#Contact">Contacto</a>
-                <a class="dropdown-item" href="{{url_for('login')}}">Login</a>
+                <!--<a class="dropdown-item" href="{{url_for('login')}}">Login</a>-->
                 {% endblock %}
               </div>
             </li>
@@ -89,7 +89,7 @@
             <div class="row">
               <div class="col-lg-12">
                 <div class="block-heading">
-                  <h2>Sobre Nosotros</h2>
+                  <h2 style="padding-top: 1%;">Sobre Nosotros</h2>
                 </div>
                 <p class="lead">Somos un equipo interdisciplinario de comunicación y diseño gráfico y creemos en el 
                   valor de construir un camino lleno de creatividad y compromiso. 
@@ -105,7 +105,7 @@
         <section id="Services" class="content-section text-center">
           <div class="container">
             <div class="block-heading">
-              <h2>Servicios</h2>
+              <h2 style="padding-top: 1%;">Servicios</h2>
               <p class="lead">Podemos contarte que estamos trabajando con proyectos y emprendedores de esta forma:</p>
             </div>
             <div class="row">
@@ -166,25 +166,69 @@
             </div>
           </div>
         </section>
-        <!--<section class="content-section text-center" id="Portfolio">
+        <section class="content-section text-center" id="Portfolio">
           <div class="container">
             <div class="block-heading">
-              <h2>Portfolio</h2>
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+              <h2 style="padding-top: 1%;">Portfolio</h2>
+              <p>Creación de logos, marca, valores. Branding y rediseño de imagen.</p>
             </div>
             <div class="portfolio-wrapper clearfix">
-              <a class="each-portfolio" data-fancybox="gallery" href="{{ url_for('static', filename='images/p-two.jpeg') }}">
+              <a class="each-portfolio" data-fancybox="gallery" href="{{ url_for('static', filename='images/escape.png') }}">
                 <div class="content hover-cont-wrap">
                   <div class="content-overlay"></div>
-                  <img class="content-image" src="{{ url_for('static', filename='images/p-two.jpeg') }}">
+                  <img class="content-image" src="{{ url_for('static', filename='images/escape.png') }}">
                   <div class="content-details fadeIn-bottom">
-                    <h5 class="p-title">Title</h5>
+                    <h5 class="p-title">Escape</h5>
                     <p class="p-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
                     <span class="zoom"><i class="fa fa-search-plus"></i></span>
                   </div>
                 </div>
               </a>
-              <a class="each-portfolio" data-fancybox="gallery" href="{{ url_for('static', filename='images/p-three.jpeg') }}">
+              <a class="each-portfolio" data-fancybox="gallery" href="{{ url_for('static', filename='images/nube_2.png') }}">
+                <div class="content hover-cont-wrap">
+                  <div class="content-overlay"></div>
+                  <img class="content-image" src="{{ url_for('static', filename='images/nube.png') }}">
+                  <div class="content-details fadeIn-bottom">
+                    <h5 class="p-title">Nube</h5>
+                    <p class="p-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                    <span class="zoom"><i class="fa fa-search-plus"></i></span>
+                  </div>
+                </div>
+              </a>
+              <a class="each-portfolio" data-fancybox="gallery" href="{{ url_for('static', filename='images/casa_josy_2.png') }}" style="border-color: black;">
+                <div class="content hover-cont-wrap">
+                  <div class="content-overlay"></div>
+                  <img class="content-image" src="{{ url_for('static', filename='images/casa_josy.png') }}">
+                  <div class="content-details fadeIn-bottom">
+                    <h5 class="p-title">Casa Josy</h5>
+                    <p class="p-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                    <span class="zoom"><i class="fa fa-search-plus"></i></span>
+                  </div>
+                </div>
+              </a>
+              <a class="each-portfolio" data-fancybox="gallery" href="{{ url_for('static', filename='images/ziba_2.png') }}">
+                <div class="content hover-cont-wrap">
+                  <div class="content-overlay"></div>
+                  <img class="content-image" src="{{ url_for('static', filename='images/ziba.png') }}">
+                  <div class="content-details fadeIn-bottom">
+                    <h5 class="p-title">Ziba</h5>
+                    <p class="p-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                    <span class="zoom"><i class="fa fa-search-plus"></i></span>
+                  </div>
+                </div>
+              </a>
+              <a class="each-portfolio" data-fancybox="gallery" href="{{ url_for('static', filename='images/mfit.png') }}">
+                <div class="content hover-cont-wrap">
+                  <div class="content-overlay"></div>
+                  <img class="content-image" src="{{ url_for('static', filename='images/mfit.png') }}">
+                  <div class="content-details fadeIn-bottom">
+                    <h5 class="p-title">Mfit</h5>
+                    <p class="p-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                    <span class="zoom"><i class="fa fa-search-plus"></i></span>
+                  </div>
+                </div>
+              </a>
+              <!--<a class="each-portfolio" data-fancybox="gallery" href="{{ url_for('static', filename='images/p-three.jpeg') }}">
                 <div class="content hover-cont-wrap">
                   <div class="content-overlay"></div>
                   <img class="content-image" src="{{ url_for('static', filename='images/p-three.jpeg') }}">
@@ -194,61 +238,17 @@
                     <span class="zoom"><i class="fa fa-search-plus"></i></span>
                   </div>
                 </div>
-              </a>
-              <a class="each-portfolio" data-fancybox="gallery" href="{{ url_for('static', filename='images/p-four.jpeg') }}">
-                <div class="content hover-cont-wrap">
-                  <div class="content-overlay"></div>
-                  <img class="content-image" src="{{ url_for('static', filename='images/p-four.jpeg') }}">
-                  <div class="content-details fadeIn-bottom">
-                    <h5 class="p-title">Title</h5>
-                    <p class="p-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-                    <span class="zoom"><i class="fa fa-search-plus"></i></span>
-                  </div>
-                </div>
-              </a>
-              <a class="each-portfolio" data-fancybox="gallery" href="{{ url_for('static', filename='images/p-five.jpeg') }}">
-                <div class="content hover-cont-wrap">
-                  <div class="content-overlay"></div>
-                  <img class="content-image" src="{{ url_for('static', filename='images/p-five.jpeg') }}">
-                  <div class="content-details fadeIn-bottom">
-                    <h5 class="p-title">Title</h5>
-                    <p class="p-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-                    <span class="zoom"><i class="fa fa-search-plus"></i></span>
-                  </div>
-                </div>
-              </a>
-              <a class="each-portfolio" data-fancybox="gallery" href="{{ url_for('static', filename='images/p-six.jpeg') }}">
-                <div class="content hover-cont-wrap">
-                  <div class="content-overlay"></div>
-                  <img class="content-image" src="{{ url_for('static', filename='images/p-six.jpeg') }}">
-                  <div class="content-details fadeIn-bottom">
-                    <h5 class="p-title">Title</h5>
-                    <p class="p-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-                    <span class="zoom"><i class="fa fa-search-plus"></i></span>
-                  </div>
-                </div>
-              </a>
-              <a class="each-portfolio" data-fancybox="gallery" href="{{ url_for('static', filename='images/p-three.jpeg') }}">
-                <div class="content hover-cont-wrap">
-                  <div class="content-overlay"></div>
-                  <img class="content-image" src="{{ url_for('static', filename='images/p-three.jpeg') }}">
-                  <div class="content-details fadeIn-bottom">
-                    <h5 class="p-title">Title</h5>
-                    <p class="p-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-                    <span class="zoom"><i class="fa fa-search-plus"></i></span>
-                  </div>
-                </div>
-              </a>
+              </a>-->
             </div>
           </div>
-        </section>-->
+        </section>
         <!-- TESTIMONIALS -->
         <section id="Testimonials" class="content-section">
           <div class="container">
             <div class="row">
               <div class="col-sm-12">
                 <div class="block-heading">
-                  <h2>Testimonios</h2>
+                  <h2 style="padding-top: 1%;">Testimonios</h2>
                   <p>Nuestros clientes </p>
                 </div>
                 <div id="customers-testimonials" class="owl-carousel">
@@ -309,10 +309,8 @@
         <section id="Contact" class="content-section">
           <div class="container">
             <div class="block-heading">
-              <h2>Contacto</h2>
-              <p class="lead">¿Qué es lo que querés realizar?
-                ¿Qué es lo que querés realizar? Lo más importante es conocer tus necesidades para crear tu plan personalizado. ¡Construyamos juntos!
-                </p>
+              <h2 style="padding-top: 1%;">Contacto</h2>
+              <p class="lead">¿Qué es lo que querés realizar? Lo más importante es conocer tus necesidades para crear tu plan personalizado. ¡Construyamos juntos!</p>
             </div>
             <div class="row">
               <div class="col-sm-12 col-md-6 col-lg-6">
